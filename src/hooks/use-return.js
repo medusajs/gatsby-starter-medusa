@@ -1,5 +1,4 @@
 import { useFormik } from "formik"
-import { graphql, useStaticQuery } from "gatsby"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import * as Yup from "yup"
 import { useMedusa } from "./use-medusa"
@@ -12,36 +11,6 @@ export const useReturn = (initialValues = null) => {
   const [returnOptions, setReturnOptions] = useState([])
   const [selectedShipping, setSelectedShipping] = useState(null)
   const [additionalItems, setAdditionalItems] = useState([])
-
-  const { raw } = useStaticQuery(graphql`
-    query {
-      raw: allMedusaProducts {
-        edges {
-          node {
-            id
-            options {
-              id
-            }
-            variants {
-              id
-              title
-              prices {
-                amount
-                currency_code
-              }
-              options {
-                value
-                option_id
-                id
-              }
-            }
-          }
-        }
-      }
-    }
-  `)
-
-  const products = raw.edges.map(({ node }) => node)
 
   const fetchOrderForm = useFormik({
     enableReinitialize: true,
@@ -126,21 +95,6 @@ export const useReturn = (initialValues = null) => {
     getOptions()
   }, [order, getReturnShippingOptions])
 
-  const getExchangeOptions = item => {
-    const {
-      variant: { product_id },
-      variant_id,
-    } = item
-
-    const product = products.find(p => p.id === product_id)
-
-    if (product) {
-      return product.variants.filter(v => v.id !== variant_id)
-    }
-
-    return []
-  }
-
   // const getRegionalPrice = item => {
   //   if (!order) {
   //     return 0
@@ -205,7 +159,6 @@ export const useReturn = (initialValues = null) => {
       deselectItem,
       updateItemQuantity,
       setSelectedShipping,
-      getExchangeOptions,
       addExchangeItem,
       removeExchangeItem,
     },

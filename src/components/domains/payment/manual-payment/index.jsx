@@ -22,12 +22,16 @@ const ManualPayment = ({ setPaymentSession, prePayment }) => {
           if (order) {
             setProcessing(false)
             navigate("/order-confirmed", { state: { order } })
+          } else {
+            setProcessing(false)
           }
         }
       })
     }
 
-    setProcessing(false)
+    return () => {
+      setProcessing(false)
+    }
   }
 
   useEffect(() => {
@@ -48,7 +52,7 @@ const ManualPayment = ({ setPaymentSession, prePayment }) => {
         onClick={handleTestPayment}
         disabled={processing}
       >
-        Pay
+        {processing ? "Processing..." : "Test Payment"}
       </button>
     </div>
   )

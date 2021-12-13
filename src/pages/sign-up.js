@@ -2,7 +2,7 @@ import { Link } from "gatsby"
 import React from "react"
 import AuthLayout from "../components/domains/auth/auth-layout"
 import Field from "../components/domains/forms/field"
-import { ErrorMessage } from "../components/domains/utility/error-message"
+import ErrorMessage from "../components/domains/utility/error-message"
 import SearchEngineOptimization from "../components/seo"
 import { useAuth } from "../hooks/use-auth"
 

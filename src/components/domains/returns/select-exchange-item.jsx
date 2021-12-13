@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
+import { useExchangeOptions } from "../../../hooks/use-exchange-options"
 import { useReturn } from "../../../hooks/use-return"
 import Arrow from "../../../icons/arrow.svg"
 import { classNames } from "../../../utils/class-names"
@@ -7,25 +8,17 @@ import QuantitySelector from "../../quantity-selector"
 const SelectExchangeItem = ({ item }) => {
   const [selected, setSelected] = useState(false)
   const [selectedExchange, setSelectedExchange] = useState(null)
-  const [options, setOptions] = useState([])
   const [quantity, setQuantity] = useState(item.quantity)
   const [variantId, setVariantId] = useState(null)
   const [amount, setAmount] = useState(0)
 
   const {
-    actions: { removeExchangeItem, addExchangeItem, getExchangeOptions },
+    actions: { removeExchangeItem, addExchangeItem },
   } = useReturn()
 
-  useEffect(() => {
-    const res = getExchangeOptions(item)
+  const getExchangeOptions = useExchangeOptions(item)
 
-    if (res.length) {
-      setOptions(res)
-      setVariantId(res[0].id)
-    }
-
-    return () => {}
-  }, [item, getExchangeOptions])
+  const [options, _setOptions] = useState(getExchangeOptions())
 
   const handleQuantityChange = quantityUpdate => {
     if (quantityUpdate > 0) {
