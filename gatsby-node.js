@@ -29,7 +29,7 @@ const getFilterables = products => {
   return filterables
 }
 
-const STORE_URL = process.env.STORE_URL || "http://localhost:9000"
+const STORE_URL = process.env.GATSBY_STORE_URL || "http://localhost:9000"
 
 // This method should be deleted once you have added collections to your store
 exports.sourceNodes = async function ({
