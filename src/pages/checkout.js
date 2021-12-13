@@ -23,8 +23,9 @@ const Checkout = () => {
       selectedShippingMethod,
       setSelectedShippingMethod,
       getShippingOptions,
+      shippingError,
+      setShippingError,
     },
-    loading,
     setupCheckout,
   } = useCheckout(hideBilling)
 
@@ -55,6 +56,8 @@ const Checkout = () => {
           <SelectDelivery
             getShippingOptions={getShippingOptions}
             setSelectedShippingMethod={setSelectedShippingMethod}
+            error={shippingError}
+            setError={setShippingError}
           />
           <Divider />
           <Payment setupCheckout={setupCheckout} />

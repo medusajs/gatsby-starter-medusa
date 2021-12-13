@@ -10,6 +10,7 @@ export const useCheckout = (sameBilling = true) => {
   const [selectedShippingMethod, setSelectedShippingMethod] = useState(null)
   const [loading, setLoading] = useState(false)
   const [cartId, setCartId] = useState(null)
+  const [shippingError, setShippingError] = useState(null)
 
   const {
     cart,
@@ -150,6 +151,7 @@ export const useCheckout = (sameBilling = true) => {
     }
 
     if (!selectedShippingMethod) {
+      setShippingError("Please select a shipping method")
       setLoading(false)
       return false
     }
@@ -157,6 +159,7 @@ export const useCheckout = (sameBilling = true) => {
     const shippingMethodError = await setShippingOption()
 
     if (shippingMethodError) {
+      setShippingError("An error occured, please try again")
       setLoading(false)
       return false
     }
@@ -171,10 +174,9 @@ export const useCheckout = (sameBilling = true) => {
         .listCartOptions(cartId)
         .then(({ shipping_options }) => shipping_options)
         .catch(_err => {
+          setShippingError("An error occured, please try again")
           return undefined
         })
-
-      console.log(options)
 
       return options
     }
@@ -191,6 +193,8 @@ export const useCheckout = (sameBilling = true) => {
       selectedShippingMethod,
       setSelectedShippingMethod,
       clearShippingMethod,
+      shippingError,
+      setShippingError,
     },
     setupCheckout,
     loading,

@@ -3,9 +3,14 @@ import React, { useEffect, useState } from "react"
 import { useCart } from "../../../hooks/use-cart"
 import { useRegion } from "../../../hooks/use-region"
 import ShippingOptions from "../shipping/shipping-options"
+import ErrorMessage from "../utility/error-message"
 
-const SelectDelivery = ({ getShippingOptions, setSelectedShippingMethod }) => {
-  const [error, setError] = useState(null)
+const SelectDelivery = ({
+  getShippingOptions,
+  setSelectedShippingMethod,
+  error,
+  setError,
+}) => {
   const [shippingOptions, setShippingOptions] = useState([])
 
   const { cart } = useCart()
@@ -57,7 +62,7 @@ const SelectDelivery = ({ getShippingOptions, setSelectedShippingMethod }) => {
 
   return (
     <div>
-      {!error && shippingOptions && (
+      {shippingOptions && (
         <ShippingOptions
           title="Delivery method"
           options={shippingOptions}
@@ -65,11 +70,7 @@ const SelectDelivery = ({ getShippingOptions, setSelectedShippingMethod }) => {
           onSelect={setSelectedShippingMethod}
         />
       )}
-      {error && (
-        <span role="alert" className="text-red-500">
-          {error}
-        </span>
-      )}
+      {error && <ErrorMessage error={error} />}
     </div>
   )
 }
