@@ -108,7 +108,7 @@ export const CartProvider = props => {
   const fetchCart = useCallback(async () => {
     let cart = undefined
 
-    const id = localStorage.getItem(CART_ID) || cartId.current
+    const id = localStorage.getItem(CART_ID)
 
     if (id) {
       cart = await client.carts
@@ -156,9 +156,12 @@ export const CartProvider = props => {
   }
 
   const resetCart = () => {
-    dispatch({
-      type: ACTIONS.RESET_CART,
-    })
+    if (cartId.current) {
+      cartId.current = undefined
+    }
+
+    localStorage.removeItem(CART_ID)
+    dispatch({ type: ACTIONS.RESET_CART })
   }
 
   const addItem = async item => {
@@ -283,8 +286,7 @@ export const CartProvider = props => {
       .catch(_err => undefined)
 
     if (order) {
-      localStorage.removeItem(CART_ID)
-      dispatch({ type: ACTIONS.RESET_CART })
+      resetCart()
     }
 
     return order

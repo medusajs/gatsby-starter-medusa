@@ -15,8 +15,6 @@ const ProductImages = ({ images = [] }) => {
     }
   }
 
-  console.log(images)
-
   return (
     <div className="flex">
       <div className="hidden lg:flex flex-col items-center mr-4">

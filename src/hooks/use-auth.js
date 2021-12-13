@@ -19,7 +19,6 @@ export const useAuth = () => {
 
       if (response.error) {
         setStatus(response.error.message)
-        console.log(response.error)
         return
       }
 
@@ -41,7 +40,6 @@ export const useAuth = () => {
 
       if (response.error) {
         setStatus(response.error.message)
-        console.log(response.error)
         return
       }
 

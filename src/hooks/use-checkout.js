@@ -19,7 +19,6 @@ export const useCheckout = (sameBilling = true) => {
 
   useEffect(() => {
     if (cart.id !== cartId) {
-      console.log(cart.id, cartId)
       setCartId(cart.id)
     }
   }, [cart, cartId])
@@ -33,18 +32,14 @@ export const useCheckout = (sameBilling = true) => {
     },
     validationSchema: Validator.checkout.contactSchema,
     onSubmit: async (values, { setStatus }) => {
-      let error = false
       const { email } = values
 
       await client.carts
         .update(cart.id, { email })
         .then(({ cart }) => updateCart(cart))
         .catch(_err => {
-          setStatus("An error occurred")
-          error = true
+          setStatus({ error: true })
         })
-
-      return error
     },
   })
 
@@ -64,17 +59,21 @@ export const useCheckout = (sameBilling = true) => {
     },
     validationSchema: Validator.checkout.shippingSchema,
     onSubmit: async (values, { setStatus }) => {
-      let error = false
+      const payload = {
+        shipping_address: values,
+      }
+
+      if (sameBilling) {
+        delete values.phone
+        payload.billing_address = values
+      }
 
       await client.carts
-        .update(cart.id, { shipping_address: values })
+        .update(cart.id, payload)
         .then(({ cart }) => updateCart(cart))
         .catch(_err => {
-          setStatus("An error occurred")
-          error = true
+          setStatus({ error: true })
         })
-
-      return error
     },
   })
 
@@ -92,17 +91,12 @@ export const useCheckout = (sameBilling = true) => {
     },
     validationSchema: Validator.checkout.billingSchema,
     onSubmit: async (values, { setStatus }) => {
-      let error = false
-
       await client.carts
         .update(cart.id, { billing_address: values })
         .then(({ cart }) => updateCart(cart))
         .catch(_err => {
-          setStatus("An error occurred")
-          error = true
+          setStatus({ error: true })
         })
-
-      return error
     },
   })
 
@@ -127,24 +121,40 @@ export const useCheckout = (sameBilling = true) => {
 
   const setupCheckout = async () => {
     setLoading(true)
-    const contactError = await contactForm.submitForm()
 
-    if (contactError) {
+    if (!contactForm.isValid) {
       setLoading(false)
       return false
     }
 
-    const shippingError = await shippingForm.submitForm()
+    await contactForm.submitForm()
 
-    if (shippingError) {
+    if (contactForm.status?.error) {
+      setLoading(false)
+      return false
+    }
+
+    if (!shippingForm.isValid) {
+      setLoading(false)
+      return false
+    }
+
+    await shippingForm.submitForm()
+
+    if (shippingForm.status?.error) {
       setLoading(false)
       return false
     }
 
     if (!sameBilling) {
-      const billingError = await billingForm.submitForm()
+      if (!billingForm.isValid) {
+        setLoading(false)
+        return false
+      }
 
-      if (billingError) {
+      await billingForm.submitForm()
+
+      if (billingForm.status?.error) {
         setLoading(false)
         return false
       }
