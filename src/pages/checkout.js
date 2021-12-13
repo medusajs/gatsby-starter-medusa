@@ -37,7 +37,7 @@ const Checkout = () => {
           <ContactInformation controller={contactForm} />
           <Divider />
           <ShippingAddress controller={shippingForm} />
-          <label class="flex items-center text-grey-700 font-light text-sm mt-4">
+          <label className="flex items-center text-grey-700 font-light text-sm mt-4">
             <input
               className="checkbox-ui"
               type="checkbox"

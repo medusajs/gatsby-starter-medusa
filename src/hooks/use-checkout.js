@@ -160,6 +160,8 @@ export const useCheckout = (sameBilling = true) => {
       }
     }
 
+    setShippingError(null)
+
     if (!selectedShippingMethod) {
       setShippingError("Please select a shipping method")
       setLoading(false)

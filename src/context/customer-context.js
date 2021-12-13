@@ -82,6 +82,8 @@ export const CustomerProvider = props => {
       updateCustomer(response.customer)
     }
 
+    console.log(response)
+
     return response
   }
 

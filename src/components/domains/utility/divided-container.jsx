@@ -5,7 +5,7 @@ const DividedContainer = ({ children }) => {
     <div className="inline-flex items-center">
       {children.map((child, index) => {
         return (
-          <Fragment>
+          <Fragment key={index}>
             {child}
             {index !== children.length - 1 && (
               <div className="w-px h-4 bg-ui-medium mx-4"></div>

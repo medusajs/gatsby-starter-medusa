@@ -2,6 +2,7 @@ import { Link } from "gatsby"
 import React from "react"
 import AuthLayout from "../components/domains/auth/auth-layout"
 import Field from "../components/domains/forms/field"
+import ErrorMessage from "../components/domains/utility/error-message"
 import SearchEngineOptimization from "../components/seo"
 import { useAuth } from "../hooks/use-auth"
 
@@ -29,6 +30,11 @@ const SignIn = () => {
             loginForm.handleSubmit()
           }}
         >
+          {loginForm.status?.authError && (
+            <div className="mb-2">
+              <ErrorMessage error={loginForm.status.authError} />
+            </div>
+          )}
           <Field
             label="Email"
             type="email"

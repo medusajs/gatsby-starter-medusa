@@ -1,7 +1,6 @@
 module.exports = {
-  mode: "jit",
   future: {},
-  purge: ["./src/**/*.{js,jsx,ts,tsx,vue}"],
+  content: ["./src/**/*.{js,jsx,ts,tsx,vue}"],
   theme: {
     extend: {
       fontSize: {
@@ -37,6 +36,5 @@ module.exports = {
       },
     },
   },
-  variants: {},
   plugins: [require("@tailwindcss/forms")],
 }
