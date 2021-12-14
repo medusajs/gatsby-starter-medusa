@@ -8,9 +8,11 @@ import SelectReturnItem from "../components/domains/returns/select-return-item"
 import SelectReturnQuantity from "../components/domains/returns/select-return-quantity"
 import ShippingOptions from "../components/domains/shipping/shipping-options"
 import Divider from "../components/domains/utility/divider"
+import ErrorMessage from "../components/domains/utility/error-message"
 import Grid from "../components/domains/utility/grid"
 import SearchEngineOptimization from "../components/seo"
 import { useReturn } from "../hooks/use-return"
+import { classNames } from "../utils/class-names"
 
 const CreateReturn = ({ location }) => {
   const [initialValues, setInitialValues] = useState(null)
@@ -20,13 +22,21 @@ const CreateReturn = ({ location }) => {
     fetchOrderForm,
     returnOptions,
     selectedItems,
-    totals,
+    additionalItems,
+    selectedShipping,
+    returnItemsError,
+    returnShippingError,
+    completionError,
+    notReturnable,
     actions: {
       setOrder,
       selectItem,
       deselectItem,
       updateItemQuantity,
       setSelectedShipping,
+      addExchangeItem,
+      removeExchangeItem,
+      createReturn,
     },
   } = useReturn(initialValues)
 
@@ -37,6 +47,22 @@ const CreateReturn = ({ location }) => {
       setOrder(res)
     }
   }, [location.state, setOrder])
+
+  useEffect(() => {
+    if (returnItemsError) {
+      document
+        .getElementById("return-items-error")
+        .scrollIntoView({ behavior: "smooth", block: "center" })
+    }
+  }, [returnItemsError])
+
+  useEffect(() => {
+    if (returnShippingError) {
+      document
+        .getElementById("return-shipping-error")
+        .scrollIntoView({ behavior: "smooth", block: "center" })
+    }
+  }, [returnShippingError])
 
   return (
     <div className="layout-base">
@@ -84,6 +110,15 @@ const CreateReturn = ({ location }) => {
               <div className="mt-8">
                 <h3>Select items</h3>
                 <p>Select the items you wish to return</p>
+                <div
+                  className={classNames(
+                    returnItemsError ? "block" : "hidden",
+                    "mt-2"
+                  )}
+                  id="return-items-error"
+                >
+                  <ErrorMessage error={returnItemsError} />
+                </div>
                 <div className="mt-4">
                   <Grid>
                     {order.items.map(item => {
@@ -128,34 +163,65 @@ const CreateReturn = ({ location }) => {
                 {selectedItems.map(item => {
                   return (
                     <div key={item.id} className="mt-4">
-                      <SelectExchangeItem item={item} />
+                      <SelectExchangeItem
+                        item={item}
+                        currencyCode={order?.currency_code}
+                        taxRate={order?.tax_rate}
+                        addExchangeItem={addExchangeItem}
+                        removeExchangeItem={removeExchangeItem}
+                      />
                     </div>
                   )
                 })}
               </div>
               <Divider />
-              <div className="flex items-center mt-4">
+              <div className="mt-4">
                 {returnOptions.length && (
                   <ShippingOptions
                     options={returnOptions}
                     title="Return method"
                     description={
-                      " We recommend purchasing a shipping label to ensure there is a tracking code and safe means for returning your product(s)."
+                      "We recommend purchasing a shipping label to ensure there is a tracking code and safe means for returning your product(s)."
                     }
                     onSelect={setSelectedShipping}
+                    defaultValue={selectedShipping}
                     currencyCode={order.currency_code}
                   />
                 )}
+                <div
+                  className={classNames(
+                    returnShippingError ? "block" : "hidden",
+                    "mt-2"
+                  )}
+                  id="return-shipping-error"
+                >
+                  <ErrorMessage error={returnShippingError} />
+                </div>
               </div>
             </div>
           </div>
           <div className="lg:pl-16 lg:w-1/2 mt-8">
-            <ReturnSummary total={totals} />
+            <ReturnSummary
+              selectedItems={selectedItems}
+              additionalItems={additionalItems}
+              selectedShipping={selectedShipping}
+              currencyCode={order?.currency_code}
+              completeReturn={createReturn}
+              error={completionError}
+            />
           </div>
         </div>
       ) : (
-        <div className=" w-full py-24 flex items-center justify-center">
-          <p>Retrieve an order to create a return</p>
+        <div className="flex w-full py-24 items-center justify-center">
+          {notReturnable ? (
+            <ErrorMessage
+              error={
+                "The selected order is not able to be returned. This can be because it has not been processed yet, or due to it already having been returned. If you wish to cancel your order or have any questions then don't hesitate to contact us"
+              }
+            />
+          ) : (
+            <p>Retrieve an order to create a return</p>
+          )}
         </div>
       )}
     </div>

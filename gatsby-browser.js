@@ -3,9 +3,10 @@ import React from "react"
 import Layout from "./src/components/layout"
 import { MedusaProvider } from "./src/context/medusa-context"
 
-const STORE_URL = process.env.GATSBY_STORE_URL || "http://localhost:9000"
+const BASE_URL =
+  process.env.GATSBY_MEDUSA_BACKEND_URL || "http://localhost:9000"
 
-const medusaClient = new Medusa({ baseUrl: STORE_URL })
+const medusaClient = new Medusa({ baseUrl: BASE_URL })
 
 export const wrapPageElement = ({ element, props }) => {
   return (

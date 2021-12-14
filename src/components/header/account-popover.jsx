@@ -23,10 +23,6 @@ const AccountPopover = () => {
       label: "Order history",
       to: "/account/order-history",
     },
-    {
-      label: "Sign out",
-      to: "/account/sign-out",
-    },
   ]
 
   return (

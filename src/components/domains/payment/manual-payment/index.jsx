@@ -1,26 +1,34 @@
 import { navigate } from "gatsby"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useCart } from "../../../../hooks/use-cart"
 import ErrorMessage from "../../utility/error-message"
 
-const ManualPayment = ({ setPaymentSession, prePayment }) => {
+const ManualPayment = ({ setPaymentSession }) => {
   const {
     actions: { completeCart },
   } = useCart()
 
+  const [processing, setProcessing] = useState(false)
+
   const handleTestPayment = async () => {
-    const validCheckout = await prePayment()
+    setProcessing(true)
+    await setPaymentSession().then(async cart => {
+      if (cart) {
+        const order = await completeCart(cart.id)
 
-    if (validCheckout) {
-      await setPaymentSession().then(async cart => {
-        if (cart) {
-          const order = await completeCart(cart.id)
-
-          if (order) {
-            navigate("/order-confirmed", { state: { order } })
-          }
+        if (order) {
+          setProcessing(false)
+          navigate("/order-confirmed", { state: { order } })
+        } else {
+          setProcessing(false)
         }
-      })
+      }
+    })
+
+    setProcessing(false)
+
+    return () => {
+      setProcessing(false)
     }
   }
 
@@ -31,14 +39,18 @@ const ManualPayment = ({ setPaymentSession, prePayment }) => {
   }, [])
 
   return (
-    <div className="py-4 flex flex-col">
+    <div className="flex flex-col">
       <ErrorMessage
         error={
           "This is for testing purposes only, and should not be used in a production environment."
         }
       />
-      <button className="btn-ui mt-4" onClick={handleTestPayment}>
-        Pay
+      <button
+        className="btn-ui my-4"
+        onClick={handleTestPayment}
+        disabled={processing}
+      >
+        {processing ? "Processing..." : "Test Payment"}
       </button>
     </div>
   )

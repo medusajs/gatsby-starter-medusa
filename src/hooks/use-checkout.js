@@ -10,6 +10,13 @@ export const useCheckout = (sameBilling = true) => {
   const [selectedShippingMethod, setSelectedShippingMethod] = useState(null)
   const [loading, setLoading] = useState(false)
   const [cartId, setCartId] = useState(null)
+  const [shippingError, setShippingError] = useState(null)
+
+  const [shippingAddressSubmitted, setShippingAddressSubmitted] =
+    useState(false)
+  const [billingAddressSubmitted, setBillingAddressSubmitted] = useState(false)
+  const [contactSubmitted, setContactSubmitted] = useState(false)
+  const [shippingMethodSubmitted, setShippingMethodSubmitted] = useState(false)
 
   const {
     cart,
@@ -18,7 +25,6 @@ export const useCheckout = (sameBilling = true) => {
 
   useEffect(() => {
     if (cart.id !== cartId) {
-      console.log(cart.id, cartId)
       setCartId(cart.id)
     }
   }, [cart, cartId])
@@ -32,18 +38,22 @@ export const useCheckout = (sameBilling = true) => {
     },
     validationSchema: Validator.checkout.contactSchema,
     onSubmit: async (values, { setStatus }) => {
-      let error = false
       const { email } = values
 
-      await client.carts
+      const cartRes = await client.carts
         .update(cart.id, { email })
-        .then(({ cart }) => updateCart(cart))
+        .then(({ cart }) => {
+          updateCart(cart)
+          return cart
+        })
         .catch(_err => {
-          setStatus("An error occurred")
-          error = true
+          setStatus({ error: true })
+          return undefined
         })
 
-      return error
+      if (cartRes) {
+        setContactSubmitted(true)
+      }
     },
   })
 
@@ -63,17 +73,29 @@ export const useCheckout = (sameBilling = true) => {
     },
     validationSchema: Validator.checkout.shippingSchema,
     onSubmit: async (values, { setStatus }) => {
-      let error = false
+      const payload = {
+        shipping_address: values,
+      }
 
-      await client.carts
-        .update(cart.id, { shipping_address: values })
-        .then(({ cart }) => updateCart(cart))
+      if (sameBilling) {
+        delete values.phone
+        payload.billing_address = values
+      }
+
+      const cartRes = await client.carts
+        .update(cart.id, payload)
+        .then(({ cart }) => {
+          updateCart(cart)
+          return cart
+        })
         .catch(_err => {
-          setStatus("An error occurred")
-          error = true
+          setStatus({ error: true })
+          return undefined
         })
 
-      return error
+      if (cartRes) {
+        setShippingAddressSubmitted(true)
+      }
     },
   })
 
@@ -91,72 +113,81 @@ export const useCheckout = (sameBilling = true) => {
     },
     validationSchema: Validator.checkout.billingSchema,
     onSubmit: async (values, { setStatus }) => {
-      let error = false
-
-      await client.carts
+      const cartRes = await client.carts
         .update(cart.id, { billing_address: values })
-        .then(({ cart }) => updateCart(cart))
+        .then(({ cart }) => {
+          updateCart(cart)
+          return cart
+        })
         .catch(_err => {
-          setStatus("An error occurred")
-          error = true
+          setStatus({ error: true })
+          return undefined
         })
 
-      return error
+      if (cartRes) {
+        setBillingAddressSubmitted(true)
+      }
     },
   })
 
   const setShippingOption = async () => {
-    let error = false
-
-    await client.carts
+    const cartRes = await client.carts
       .addShippingMethod(cart.id, {
         option_id: selectedShippingMethod.id,
       })
-      .then(({ cart }) => updateCart(cart))
+      .then(({ cart }) => {
+        updateCart(cart)
+        return cart
+      })
       .catch(_err => {
-        error = true
+        setShippingError("An error occured, please try again")
+        return undefined
       })
 
-    return error
+    if (cartRes) {
+      setShippingMethodSubmitted(true)
+    }
   }
 
   const clearShippingMethod = () => {
     setSelectedShippingMethod(null)
+    setShippingMethodSubmitted(false)
   }
 
   const setupCheckout = async () => {
     setLoading(true)
-    const contactError = await contactForm.submitForm()
 
-    if (contactError) {
-      setLoading(false)
-      return false
-    }
+    setShippingError(null)
+    contactForm.setErrors({})
+    shippingForm.setErrors({})
+    billingForm.setErrors({})
 
-    const shippingError = await shippingForm.submitForm()
+    await contactForm.submitForm()
 
-    if (shippingError) {
-      setLoading(false)
-      return false
-    }
+    await shippingForm.submitForm()
 
     if (!sameBilling) {
-      const billingError = await billingForm.submitForm()
-
-      if (billingError) {
-        setLoading(false)
-        return false
-      }
+      await billingForm.submitForm()
     }
 
     if (!selectedShippingMethod) {
+      setShippingError("Please select a shipping method")
       setLoading(false)
       return false
     }
 
-    const shippingMethodError = await setShippingOption()
+    await setShippingOption()
 
-    if (shippingMethodError) {
+    if (
+      !contactSubmitted ||
+      !shippingAddressSubmitted ||
+      !shippingMethodSubmitted
+    ) {
+      setLoading(false)
+      return false
+    }
+
+    if (!sameBilling && !billingAddressSubmitted) {
       setLoading(false)
       return false
     }
@@ -171,10 +202,9 @@ export const useCheckout = (sameBilling = true) => {
         .listCartOptions(cartId)
         .then(({ shipping_options }) => shipping_options)
         .catch(_err => {
+          setShippingError("An error occured, please try again")
           return undefined
         })
-
-      console.log(options)
 
       return options
     }
@@ -191,6 +221,8 @@ export const useCheckout = (sameBilling = true) => {
       selectedShippingMethod,
       setSelectedShippingMethod,
       clearShippingMethod,
+      shippingError,
+      setShippingError,
     },
     setupCheckout,
     loading,

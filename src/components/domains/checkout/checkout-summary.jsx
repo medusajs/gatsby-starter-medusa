@@ -4,12 +4,11 @@ import Totals from "../../totals"
 import CheckoutItem from "./checkout-item"
 import DiscountField from "./discount-field"
 
-const CheckoutSummary = ({ cart, shippingOption, hidden = true }) => {
+const CheckoutSummary = ({ cart, shippingOption }) => {
   return (
     <div
       className={classNames(
-        hidden ? "hidden lg:flex" : "flex",
-        "absolute top-0 left-0 bottom-0 w-full flex-col lg:relative bg-white lg:rounded-lg shadow py-6 px-8 max-h-review overflow-hidden"
+        "flex w-full flex-col lg:relative bg-white mb-4 lg:mb-0 rounded-lg shadow py-6 px-8 max-h-review overflow-hidden"
       )}
     >
       <div className="flex-grow overflow-y-scroll">

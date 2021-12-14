@@ -1,5 +1,5 @@
 import { RadioGroup } from "@headlessui/react"
-import React, { Fragment, useState } from "react"
+import React, { Fragment } from "react"
 import { formatPrice } from "../../../utils/format-price"
 
 const ShippingOptions = ({
@@ -8,18 +8,16 @@ const ShippingOptions = ({
   description = null,
   currencyCode = "eur",
   onSelect,
+  defaultValue,
 }) => {
-  const [selected, setSelected] = useState(options[0] ?? null)
-
-  const handleChange = option => {
-    console.log(option)
-    setSelected(option)
-    onSelect(option)
-  }
+  // Since there is an object structure difference between the selected
+  // shipping method and the shipping options, we check if a option is
+  // selected using the id.
+  const selected = options.find(o => o.id === defaultValue?.id)
 
   return (
     <div>
-      <RadioGroup value={selected} onChange={handleChange}>
+      <RadioGroup value={selected} onChange={onSelect}>
         <RadioGroup.Label as="h3">{title}</RadioGroup.Label>
         {description && (
           <RadioGroup.Description as="p">{description}</RadioGroup.Description>

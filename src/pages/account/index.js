@@ -29,7 +29,6 @@ const Account = () => {
     }),
     onSubmit: async values => {
       const response = await updateCustomerDetails(values)
-      console.log(values)
 
       if (response.error) {
         console.warn(response.error)

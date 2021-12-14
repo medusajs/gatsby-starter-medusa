@@ -24,7 +24,7 @@ const Select = ({
       <select
         name={name}
         autoComplete={autocomplete}
-        defaultValue={defaultValue}
+        value={defaultValue}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         className={classNames(

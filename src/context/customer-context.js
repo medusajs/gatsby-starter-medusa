@@ -1,4 +1,3 @@
-import { navigate } from "gatsby"
 import React, {
   createContext,
   useCallback,
@@ -47,9 +46,9 @@ export const CustomerProvider = props => {
     dispatch({ type: ACTIONS.UPDATE_CUSTOMER, payload: customer })
   }
 
-  const clearCustomer = () => {
+  const clearCustomer = useCallback(() => {
     dispatch({ type: ACTIONS.CLEAR_CUSTOMER })
-  }
+  }, [])
 
   const createCustomer = async payload => {
     const response = { customer: undefined, error: undefined }
@@ -117,13 +116,7 @@ export const CustomerProvider = props => {
     clearCustomer()
     setLoading(false)
     return false
-  }, [client.customers])
-
-  const logoutCustomer = async () => {
-    await client.auth.deleteSession()
-    navigate("/")
-    clearCustomer()
-  }
+  }, [client.customers, clearCustomer])
 
   const retrieveOrders = async () => {
     const orders = await client.customers
@@ -147,7 +140,6 @@ export const CustomerProvider = props => {
         actions: {
           createCustomer,
           loginCustomer,
-          logoutCustomer,
           updateCustomerDetails,
           retrieveOrders,
         },

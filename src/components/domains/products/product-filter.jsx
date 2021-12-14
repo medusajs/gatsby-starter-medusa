@@ -34,7 +34,7 @@ const ProductFilter = ({ filterables, activeFilters, setActiveFilters }) => {
                 return (
                   <label
                     key={index}
-                    class="block py-2 leading-5 text-sm text-gray-700"
+                    className="block py-2 leading-5 text-sm text-gray-700"
                   >
                     <input
                       className="checkbox-ui"

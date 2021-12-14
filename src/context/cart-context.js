@@ -22,7 +22,6 @@ const defaultCartContext = {
     removeItem: async () => {},
     updateQuantity: async () => {},
     addDiscount: async () => {},
-    addCheckoutInfo: async () => {},
     createPaymentSession: async () => {},
     setPaymentSession: async () => {},
     completeCart: async () => {},
@@ -83,32 +82,33 @@ export const CartProvider = props => {
   const client = useMedusa()
   const { region } = useRegion()
 
-  useEffect(() => {
-    if (state.cart.id) {
-      localStorage.setItem(CART_ID, state.cart.id)
-      cartId.current = state.cart.id
+  const setLocalId = id => {
+    if (localStorage) {
+      localStorage.setItem(CART_ID, id)
+      cartId.current = id
     }
-  }, [state.cart?.id])
+  }
 
-  const createCart = async () => {
+  const createCart = useCallback(async () => {
     const cart = await client.carts
       .create()
       .then(({ cart }) => cart)
       .catch(_err => undefined)
 
     if (cart) {
+      setLocalId(cart.id)
       dispatch({ type: ACTIONS.UPDATE_CART, payload: cart })
       setLoading(false)
-      return
+      return cart
     }
 
     setLoading(false)
-  }
+  }, [client.carts])
 
   const fetchCart = useCallback(async () => {
     let cart = undefined
 
-    const id = localStorage.getItem(CART_ID) || cartId.current
+    const id = localStorage.getItem(CART_ID)
 
     if (id) {
       cart = await client.carts
@@ -124,7 +124,21 @@ export const CartProvider = props => {
     }
 
     await createCart()
-  }, [])
+  }, [createCart, client.carts])
+
+  useEffect(() => {
+    const checkCart = async () => {
+      if (localStorage) {
+        const cartId = localStorage.getItem(CART_ID)
+
+        if (!cartId) {
+          createCart()
+        }
+      }
+    }
+
+    checkCart()
+  }, [createCart])
 
   useEffect(() => {
     const initCart = async () => {
@@ -146,7 +160,7 @@ export const CartProvider = props => {
     if (cartId.current && region?.id) {
       updateCartRegion()
     }
-  }, [region?.id])
+  }, [region?.id, client.carts])
 
   const updateCart = cart => {
     dispatch({
@@ -156,13 +170,23 @@ export const CartProvider = props => {
   }
 
   const resetCart = () => {
-    dispatch({
-      type: ACTIONS.RESET_CART,
-    })
+    if (cartId.current) {
+      cartId.current = undefined
+    }
+
+    localStorage.removeItem(CART_ID)
+    dispatch({ type: ACTIONS.RESET_CART })
   }
 
   const addItem = async item => {
     const response = { cart: undefined, error: undefined }
+
+    let id = localStorage.getItem(CART_ID)
+
+    if (!id) {
+      const cart = await createCart()
+      id = cart.id
+    }
 
     response.cart = await client.carts.lineItems
       .create(cartId.current, item)
@@ -233,25 +257,6 @@ export const CartProvider = props => {
     return response
   }
 
-  const addCheckoutInfo = async ({
-    shippingAddress,
-    email,
-    billingAddress,
-  }) => {
-    const response = { cart: undefined, error: undefined }
-
-    const info = {
-      shipping_address: shippingAddress,
-      email,
-    }
-
-    if (billingAddress) {
-      info["billing_address"] = billingAddress
-    }
-
-    response.cart = await client.carts.update(cartId.current, info)
-  }
-
   const createPaymentSession = async cartId => {
     const cart = await client.carts
       .createPaymentSessions(cartId)
@@ -283,8 +288,7 @@ export const CartProvider = props => {
       .catch(_err => undefined)
 
     if (order) {
-      localStorage.removeItem(CART_ID)
-      dispatch({ type: ACTIONS.RESET_CART })
+      resetCart()
     }
 
     return order
@@ -303,7 +307,6 @@ export const CartProvider = props => {
           removeItem,
           updateQuantity,
           addDiscount,
-          addCheckoutInfo,
           createPaymentSession,
           setPaymentSession,
           completeCart,

@@ -20,7 +20,7 @@ const Validator = {
   checkout: {
     contactSchema: Yup.object({
       email: Yup.string().email(ERRORS.INVALID_EMAIL).required(ERRORS.REQUIRED),
-    }),
+    }).required(ERRORS.REQUIRED),
     shippingSchema: Yup.object({
       first_name: Yup.string().required(ERRORS.REQUIRED),
       last_name: Yup.string().required(ERRORS.REQUIRED),
@@ -32,7 +32,7 @@ const Validator = {
       province: Yup.string().optional(),
       postal_code: Yup.string().required(ERRORS.REQUIRED),
       phone: Yup.string().optional(),
-    }),
+    }).required(ERRORS.REQUIRED),
     billingSchema: Yup.object({
       first_name: Yup.string().required(ERRORS.REQUIRED),
       last_name: Yup.string().required(ERRORS.REQUIRED),
@@ -43,7 +43,10 @@ const Validator = {
       city: Yup.string().required(ERRORS.REQUIRED),
       province: Yup.string().optional(),
       postal_code: Yup.string().required(ERRORS.REQUIRED),
-    }),
+    }).required(ERRORS.REQUIRED),
+    shippingMethodSchema: Yup.object({
+      option_id: Yup.string().required(ERRORS.REQUIRED),
+    }).required(),
   },
 }
 

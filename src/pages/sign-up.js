@@ -2,6 +2,7 @@ import { Link } from "gatsby"
 import React from "react"
 import AuthLayout from "../components/domains/auth/auth-layout"
 import Field from "../components/domains/forms/field"
+import ErrorMessage from "../components/domains/utility/error-message"
 import SearchEngineOptimization from "../components/seo"
 import { useAuth } from "../hooks/use-auth"
 
@@ -29,6 +30,9 @@ const SignUp = () => {
             registerForm.handleSubmit()
           }}
         >
+          {registerForm.status?.authError && (
+            <ErrorMessage error={registerForm.status.authError} />
+          )}
           <Field
             label="First name"
             className="mb-4"
