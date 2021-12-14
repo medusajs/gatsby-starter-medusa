@@ -1,7 +1,6 @@
 import _ from "lodash"
 import React, { useEffect, useState } from "react"
 import { useCart } from "../../../hooks/use-cart"
-import { useCheckout } from "../../../hooks/use-checkout"
 import { useCheckoutFlow } from "../../../hooks/use-checkout-flow"
 import { useContactForm } from "../../../hooks/use-contact-form"
 import { useShippingAddressForm } from "../../../hooks/use-shipping-address-form"
@@ -16,30 +15,40 @@ import CheckoutLayout from "./checkout-layout"
 import CheckoutSummary from "./checkout-summary"
 
 const CheckoutFlow = () => {
-  const { cart } = useCart()
+  const {
+    cart,
+    actions: { getCartShippingOptions, addShippingMethod },
+  } = useCart()
   const { state, setState } = useCheckoutFlow()
   const [shippingOptions, setShippingOptions] = useState([])
-  const {
-    shippingMethod: { getShippingOptions },
-  } = useCheckout()
+  // const {
+  //   shippingMethod: { getShippingOptions },
+  // } = useCheckout()
 
   useEffect(() => {
-    if (!cart?.id) {
-      return
+    const fetchShippingOptions = async () => {
+      getCartShippingOptions(cart.id)
+        .then(options => {
+          if (_.isEmpty(options)) {
+            return
+          }
+
+          setShippingOptions(options)
+        })
+        .catch(_err => {
+          setShippingOptions([])
+        })
     }
 
-    getShippingOptions(cart.id).then(options => {
-      if (_.isEmpty(options)) {
-        return
-      }
-
-      setShippingOptions(options)
-    })
+    if (cart.id) {
+      fetchShippingOptions()
+    }
 
     return () => {
       setShippingOptions([])
     }
-  }, [cart?.id, getShippingOptions])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cart.id])
 
   const update = step => {
     setState(step)

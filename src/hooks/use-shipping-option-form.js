@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react"
 import Validator from "../utils/validator"
 import { useCart } from "./use-cart"
-import { useMedusa } from "./use-medusa"
 
 export const useShippingOptionForm = setState => {
-  const client = useMedusa()
   const {
     cart,
-    actions: { updateCart },
+    actions: { addShippingMethod },
   } = useCart()
 
   const [error, setError] = useState(null)
@@ -48,10 +46,7 @@ export const useShippingOptionForm = setState => {
     }
 
     try {
-      const cartRes = await client.carts
-        .addShippingMethod(cart.id, payload)
-        .then(({ cart }) => cart)
-      updateCart(cartRes)
+      addShippingMethod(payload)
     } catch (error) {
       setError("An error has occurred, please try again.")
       setIsSubmitting(false)

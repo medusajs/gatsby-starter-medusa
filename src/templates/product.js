@@ -19,6 +19,7 @@ const Product = ({ data, pageContext }) => {
   const { regionId, taxRate, currencyCode, handle } = pageContext
   const details = pickDetails(product)
   const {
+    loading,
     actions: { addItem },
   } = useCart()
 
@@ -82,6 +83,7 @@ const Product = ({ data, pageContext }) => {
             <button
               className="btn-ui mr-2 px-12"
               onClick={() => handleAddToCart()}
+              disabled={loading}
             >
               Add to bag
             </button>

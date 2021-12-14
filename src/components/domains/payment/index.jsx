@@ -2,17 +2,17 @@ import React, { useEffect } from "react"
 import { useCart } from "../../../hooks/use-cart"
 import ManualPayment from "./manual-payment"
 
-const Payment = () => {
+const Payment = ({ cartId = null }) => {
   const {
     cart,
     actions: { setPaymentSession, createPaymentSession },
   } = useCart()
 
   useEffect(() => {
-    if (cart && !cart.payment_sessions?.length > 0) {
-      return createPaymentSession(cart.id)
+    if (!cart.payment_sessions?.length > 0) {
+      return createPaymentSession(cartId)
     }
-  }, [cart])
+  }, [cart, cartId])
 
   return (
     <div>
@@ -24,7 +24,7 @@ const Payment = () => {
               return (
                 <ManualPayment
                   key="manual"
-                  setPaymentSession={() => setPaymentSession(cart.id, "manual")}
+                  setPaymentSession={() => setPaymentSession("manual", cartId)}
                 />
               )
             default:
