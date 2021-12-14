@@ -1,5 +1,6 @@
 import { useFormik } from "formik"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { navigate } from "gatsby"
+import { useCallback, useEffect, useState } from "react"
 import * as Yup from "yup"
 import { useMedusa } from "./use-medusa"
 
@@ -11,6 +12,12 @@ export const useReturn = (initialValues = null) => {
   const [returnOptions, setReturnOptions] = useState([])
   const [selectedShipping, setSelectedShipping] = useState(null)
   const [additionalItems, setAdditionalItems] = useState([])
+
+  const [returnItemsError, setReturnItemsError] = useState(null)
+  const [returnShippingError, setReturnShippingError] = useState(null)
+  const [completionError, setCompletionError] = useState(null)
+
+  const [notReturnable, setNotReturnable] = useState(false)
 
   const fetchOrderForm = useFormik({
     enableReinitialize: true,
@@ -24,6 +31,8 @@ export const useReturn = (initialValues = null) => {
         .integer("Not a valid order number")
         .required("Required"),
     }),
+    validateOnBlur: false,
+    validateOnChange: false,
     onSubmit: async (values, { setSubmitting, setStatus }) => {
       setSubmitting(true)
       const orderRes = await client.orders
@@ -35,6 +44,26 @@ export const useReturn = (initialValues = null) => {
         setStatus("Order not found")
         setSubmitting(false)
         return
+      }
+
+      if (orderRes.fulfillment_status) {
+        switch (orderRes.fulfillment_status) {
+          case "returned":
+            setNotReturnable(true)
+            return
+          case "not_fulfilled":
+            setNotReturnable(true)
+            return
+          case "canceled":
+            setNotReturnable(true)
+            return
+          case "requires_action":
+            setNotReturnable(true)
+            return
+          default:
+            setNotReturnable(false)
+            break
+        }
       }
 
       setOrder(orderRes)
@@ -95,55 +124,96 @@ export const useReturn = (initialValues = null) => {
     getOptions()
   }, [order, getReturnShippingOptions])
 
-  // const getRegionalPrice = item => {
-  //   if (!order) {
-  //     return 0
-  //   }
-
-  //   const regionalPrice = item.prices.find(
-  //     p => p.currency_code === order.currency_code
-  //   )
-
-  //   return regionalPrice?.amount ?? 0
-  // }
-
-  const addExchangeItem = (item, replacement) => {
-    const tmp = additionalItems.filter(i => i.id !== item.id)
-
-    // const price = getRegionalPrice(replacement)
-
-    // delete replacement.prices
-
-    const replacementItem = { id: item.id, ...replacement }
-
-    setAdditionalItems([...tmp, replacementItem])
+  const addExchangeItem = replacement => {
+    const tmp = additionalItems.filter(i => i.id !== replacement.variantId)
+    setAdditionalItems([...tmp, replacement])
   }
 
-  const getAdditionalItemsTotal = useCallback(() => {
-    return additionalItems.reduce((sum, i) => sum + i.amount * i.quantity, 0)
-  }, [additionalItems])
-
-  const getReturnItemsTotal = useCallback(() => {
-    return selectedItems.reduce((sum, i) => sum + i.unit_price * i.quantity, 0)
-  }, [selectedItems])
-
-  const getShippingTotal = useCallback(() => {
-    return selectedShipping?.amount ?? 0
-  }, [selectedShipping])
-
-  const totals = useMemo(() => {
-    return {
-      returnItems: getReturnItemsTotal(),
-      additionalItems: getAdditionalItemsTotal(),
-      shipping: getShippingTotal(),
-      currencyCode: order?.currency_code ?? "eur",
-    }
-  }, [order, getAdditionalItemsTotal, getReturnItemsTotal, getShippingTotal])
-
-  const removeExchangeItem = item => {
-    const tmp = additionalItems.filter(i => i.id !== item.id)
+  const removeExchangeItem = replacement => {
+    const tmp = additionalItems.filter(
+      i => i.variantId !== replacement.variantId
+    )
     setAdditionalItems(tmp)
   }
+
+  const createReturn = useCallback(async () => {
+    if (!order) {
+      return
+    }
+
+    setReturnItemsError(null)
+    setReturnShippingError(null)
+    setCompletionError(null)
+
+    const returnItems = selectedItems.map(i => ({
+      item_id: i.id,
+      quantity: i.quantity,
+    }))
+
+    if (returnItems.length === 0) {
+      setReturnItemsError("Please select items to return")
+      return
+    }
+
+    const exchangeItems = additionalItems.map(i => ({
+      variant_id: i.variantId,
+      quantity: i.quantity,
+    }))
+
+    const shippingOption = selectedShipping?.id ? selectedShipping.id : null
+
+    if (!shippingOption) {
+      setReturnShippingError("Please select a shipping option")
+      return
+    }
+
+    if (exchangeItems.length > 0) {
+      const swap = await client.swaps
+        .create({
+          order_id: order.id,
+          return_items: returnItems,
+          additional_items: exchangeItems,
+          return_shipping_option: shippingOption,
+        })
+        .then(({ swap }) => swap)
+        .catch(_ => undefined)
+
+      if (!swap) {
+        setCompletionError(
+          "An error occured while processing your return. Please try again."
+        )
+      }
+
+      navigate("/swap", { state: { swap } })
+    }
+
+    // const newReturn = await client.returns
+    //   .create({
+    //     items: returnItems,
+    //     order_id: order.id,
+    //     return_shipping: {
+    //       option_id: shippingOption,
+    //     },
+    //   })
+    //   .then(({ return: returnRes }) => returnRes)
+    //   .catch(_ => undefined)
+
+    // if (!newReturn) {
+    //   setCompletionError(
+    //     "An error occured while processing your return. Please try again."
+    //   )
+    //   return
+    // }
+
+    // navigate("/return-confirmed", { state: { confirmedReturn: newReturn } })
+  }, [
+    selectedItems,
+    order,
+    additionalItems,
+    selectedShipping,
+    client.returns,
+    client.swaps,
+  ])
 
   return {
     order,
@@ -152,7 +222,10 @@ export const useReturn = (initialValues = null) => {
     selectedItems,
     selectedShipping,
     additionalItems,
-    totals,
+    returnItemsError,
+    returnShippingError,
+    completionError,
+    notReturnable,
     actions: {
       setOrder,
       selectItem,
@@ -161,6 +234,7 @@ export const useReturn = (initialValues = null) => {
       setSelectedShipping,
       addExchangeItem,
       removeExchangeItem,
+      createReturn,
     },
   }
 }

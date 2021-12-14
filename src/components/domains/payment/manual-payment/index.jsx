@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import { useCart } from "../../../../hooks/use-cart"
 import ErrorMessage from "../../utility/error-message"
 
-const ManualPayment = ({ setPaymentSession, prePayment }) => {
+const ManualPayment = ({ setPaymentSession }) => {
   const {
     actions: { completeCart },
   } = useCart()
@@ -12,22 +12,20 @@ const ManualPayment = ({ setPaymentSession, prePayment }) => {
 
   const handleTestPayment = async () => {
     setProcessing(true)
-    const validCheckout = await prePayment()
+    await setPaymentSession().then(async cart => {
+      if (cart) {
+        const order = await completeCart(cart.id)
 
-    if (validCheckout) {
-      await setPaymentSession().then(async cart => {
-        if (cart) {
-          const order = await completeCart(cart.id)
-
-          if (order) {
-            setProcessing(false)
-            navigate("/order-confirmed", { state: { order } })
-          } else {
-            setProcessing(false)
-          }
+        if (order) {
+          setProcessing(false)
+          navigate("/order-confirmed", { state: { order } })
+        } else {
+          setProcessing(false)
         }
-      })
-    }
+      }
+    })
+
+    setProcessing(false)
 
     return () => {
       setProcessing(false)
@@ -41,14 +39,14 @@ const ManualPayment = ({ setPaymentSession, prePayment }) => {
   }, [])
 
   return (
-    <div className="py-4 flex flex-col">
+    <div className="flex flex-col">
       <ErrorMessage
         error={
           "This is for testing purposes only, and should not be used in a production environment."
         }
       />
       <button
-        className="btn-ui mt-4"
+        className="btn-ui my-4"
         onClick={handleTestPayment}
         disabled={processing}
       >

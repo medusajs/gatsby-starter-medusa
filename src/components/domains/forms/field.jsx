@@ -14,7 +14,7 @@ const Field = ({
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (formik.errors?.[name]) {
+    if (formik.errors?.[name] && formik.touched?.[name]) {
       setError(formik.errors[name])
     }
   }, [formik, name])

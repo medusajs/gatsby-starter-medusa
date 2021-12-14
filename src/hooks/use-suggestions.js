@@ -28,6 +28,8 @@ export const useSuggestions = () => {
   const products = data.products.edges.map(edge => edge.node)
 
   const getSuggestionsFromCart = cart => {
+    if (!cart) return []
+
     const cartProductHandles = cart.items.map(
       item => item.variant?.product?.handle
     )

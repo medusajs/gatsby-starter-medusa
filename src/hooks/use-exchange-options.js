@@ -1,7 +1,7 @@
 import { graphql, useStaticQuery } from "gatsby"
 import { useCallback, useState } from "react"
 
-export const useExchangeOptions = item => {
+export const useExchangeOptions = (item, currencyCode) => {
   const [selectedExchange, setSelectedExchange] = useState(null)
 
   const { raw } = useStaticQuery(graphql`
@@ -43,11 +43,23 @@ export const useExchangeOptions = item => {
     const product = products.find(p => p.id === product_id)
 
     if (product) {
-      return product.variants.filter(v => v.id !== variant_id)
+      const variants = product.variants.filter(v => v.id !== variant_id)
+
+      const withAmount = variants.map(v => {
+        const price = v.prices.find(p => p.currency_code === currencyCode)
+
+        return {
+          variantId: v.id,
+          title: v.title,
+          amount: price ? price.amount : 0,
+        }
+      })
+
+      return withAmount
     }
 
     return []
-  }, [item, products])
+  }, [item, currencyCode, products])
 
   const handleAddExcange = (exchangeOption, quantity) => {
     setSelectedExchange({ ...exchangeOption, quantity })

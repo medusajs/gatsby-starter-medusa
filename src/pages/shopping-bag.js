@@ -18,6 +18,7 @@ const ShoppingBag = () => {
       const relatedProducts = getSuggestionsFromCart(cart)
       setRelated(relatedProducts)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart])
 
   return (
@@ -44,7 +45,7 @@ const ShoppingBag = () => {
           <CartReview cart={cart} />
         </div>
       </div>
-      {related.length && (
+      {related.length > 0 && (
         <div className="my-12">
           <Grid
             title="You might also like"

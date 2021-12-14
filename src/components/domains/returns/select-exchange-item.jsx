@@ -1,24 +1,28 @@
 import React, { useState } from "react"
 import { useExchangeOptions } from "../../../hooks/use-exchange-options"
-import { useReturn } from "../../../hooks/use-return"
-import Arrow from "../../../icons/arrow.svg"
 import { classNames } from "../../../utils/class-names"
+import { formatPrice } from "../../../utils/format-price"
 import QuantitySelector from "../../quantity-selector"
 
-const SelectExchangeItem = ({ item }) => {
+const SelectExchangeItem = ({
+  item,
+  currencyCode,
+  taxRate,
+  addExchangeItem,
+  removeExchangeItem,
+}) => {
   const [selected, setSelected] = useState(false)
-  const [selectedExchange, setSelectedExchange] = useState(null)
   const [quantity, setQuantity] = useState(item.quantity)
-  const [variantId, setVariantId] = useState(null)
-  const [amount, setAmount] = useState(0)
+  const [isAdded, setIsAdded] = useState(false)
 
   const {
-    actions: { removeExchangeItem, addExchangeItem },
-  } = useReturn()
-
-  const getExchangeOptions = useExchangeOptions(item)
+    actions: { getExchangeOptions },
+  } = useExchangeOptions(item, currencyCode)
 
   const [options, _setOptions] = useState(getExchangeOptions())
+  const [selectedExchange, setSelectedExchange] = useState(
+    getExchangeOptions()[0]
+  )
 
   const handleQuantityChange = quantityUpdate => {
     if (quantityUpdate > 0) {
@@ -26,18 +30,24 @@ const SelectExchangeItem = ({ item }) => {
     }
   }
 
-  const handleSelect = e => {
+  const handleExchangeChange = e => {
     const id = e.target.value
 
-    setVariantId(id)
+    const exchange = options.find(option => option.id === id)
+
+    if (exchange) {
+      setSelectedExchange(exchange)
+    }
   }
 
   const handleAdd = () => {
-    addExchangeItem(item, { ...selectedExchange, quantity })
+    addExchangeItem({ ...selectedExchange, quantity })
+    setIsAdded(true)
   }
 
   const handleRemove = () => {
-    removeExchangeItem(item)
+    removeExchangeItem({ ...selectedExchange, quantity })
+    setIsAdded(false)
   }
 
   return (
@@ -64,28 +74,31 @@ const SelectExchangeItem = ({ item }) => {
             <div>
               <p>{item.title}</p>
               <p>
-                <span className="text-ui-dark">Variant: </span>{" "}
-                {item.description}
+                <span className="text-ui-dark">Price: </span>{" "}
+                {formatPrice(
+                  selectedExchange.amount,
+                  currencyCode,
+                  quantity,
+                  taxRate
+                )}
               </p>
             </div>
           </div>
         </div>
-        <span className={classNames(selected ? "opacity-100" : "opacity-50")}>
-          <img src={Arrow} alt="arrow" className="w-6 h-auto" />
-        </span>
         <div
           className={classNames(
             selected ? "opacity-100" : "opacity-50 pointer-events-none",
+            isAdded ? "opacity-50 pointer-events-none" : "flex items-center",
             "flex items-center"
           )}
         >
           <select
             className="rounded-lg shadow border-none mr-2"
-            onChange={handleSelect}
+            onChange={handleExchangeChange}
           >
-            {options.map(o => {
+            {options.map((o, i) => {
               return (
-                <option key={o.id} value={o.id}>
+                <option key={i} value={o.id}>
                   {o.title}
                 </option>
               )
@@ -98,7 +111,7 @@ const SelectExchangeItem = ({ item }) => {
           />
         </div>
       </div>
-      {/* {isAdded && (
+      {selectedExchange && (
         <div>
           {isAdded ? (
             <button className="ml-2 btn-ui" onClick={handleRemove}>
@@ -110,7 +123,7 @@ const SelectExchangeItem = ({ item }) => {
             </button>
           )}
         </div>
-      )} */}
+      )}
     </div>
   )
 }
