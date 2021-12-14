@@ -181,9 +181,10 @@ const CreateReturn = ({ location }) => {
                     options={returnOptions}
                     title="Return method"
                     description={
-                      " We recommend purchasing a shipping label to ensure there is a tracking code and safe means for returning your product(s)."
+                      "We recommend purchasing a shipping label to ensure there is a tracking code and safe means for returning your product(s)."
                     }
                     onSelect={setSelectedShipping}
+                    defaultValue={selectedShipping}
                     currencyCode={order.currency_code}
                   />
                 )}

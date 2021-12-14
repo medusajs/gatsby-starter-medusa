@@ -17,7 +17,7 @@ const SwapItem = ({ item, currencyCode, taxRate }) => {
             <span className="text-ui-dark">Variant:</span> {item.variant.title}
           </p>
         </div>
-        <div className="flex text-sm">
+        <div className="flex text-sm mt-4">
           <DividedContainer>
             <p>
               <span className="text-ui-dark">Quantity</span> {item.quantity}

@@ -187,27 +187,27 @@ export const useReturn = (initialValues = null) => {
       }
 
       navigate("/swap", { state: { swap } })
+    } else {
+      const newReturn = await client.returns
+        .create({
+          items: returnItems,
+          order_id: order.id,
+          return_shipping: {
+            option_id: shippingOption,
+          },
+        })
+        .then(({ return: returnRes }) => returnRes)
+        .catch(_ => undefined)
+
+      if (!newReturn) {
+        setCompletionError(
+          "An error occured while processing your return. Please try again."
+        )
+        return
+      }
+
+      navigate("/return-confirmed", { state: { confirmedReturn: newReturn } })
     }
-
-    // const newReturn = await client.returns
-    //   .create({
-    //     items: returnItems,
-    //     order_id: order.id,
-    //     return_shipping: {
-    //       option_id: shippingOption,
-    //     },
-    //   })
-    //   .then(({ return: returnRes }) => returnRes)
-    //   .catch(_ => undefined)
-
-    // if (!newReturn) {
-    //   setCompletionError(
-    //     "An error occured while processing your return. Please try again."
-    //   )
-    //   return
-    // }
-
-    // navigate("/return-confirmed", { state: { confirmedReturn: newReturn } })
   }, [
     selectedItems,
     order,
