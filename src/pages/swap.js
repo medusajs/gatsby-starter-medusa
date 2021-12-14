@@ -55,6 +55,7 @@ const Swap = ({ location }) => {
     }
 
     getReturn()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.state])
 
   useEffect(() => {

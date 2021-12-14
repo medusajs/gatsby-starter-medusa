@@ -44,7 +44,6 @@ const CheckoutFlow = () => {
   const update = step => {
     setState(step)
   }
-  const [hideSummary, setHideSummary] = useState(true)
 
   const contactForm = useContactForm(setState)
   const shippingAddressForm = useShippingAddressForm(setState)
@@ -140,7 +139,6 @@ const CheckoutFlow = () => {
         })}
       </div>
       <CheckoutSummary
-        hidden={hideSummary}
         cart={cart}
         shippingOption={shippingOptionController.selectedShippingMethod}
       />
