@@ -89,7 +89,7 @@ const CheckoutFlow = () => {
       key: 3,
       completed: false,
       children: <Payment />,
-      handleSubmit: () => console.log("next"),
+      handleSubmit: () => {},
     },
   ]
 
