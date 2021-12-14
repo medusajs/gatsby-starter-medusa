@@ -13,6 +13,7 @@ const ManualPayment = ({ setPaymentSession }) => {
   const handleTestPayment = async () => {
     setProcessing(true)
     await setPaymentSession().then(async cart => {
+      console.log(cart)
       if (cart) {
         const order = await completeCart(cart.id)
 
@@ -20,6 +21,7 @@ const ManualPayment = ({ setPaymentSession }) => {
           setProcessing(false)
           navigate("/order-confirmed", { state: { order } })
         } else {
+          console.log("Error completing cart")
           setProcessing(false)
         }
       }
