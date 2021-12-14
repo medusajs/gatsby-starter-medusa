@@ -178,13 +178,6 @@ export const useCheckout = (sameBilling = true) => {
 
     await setShippingOption()
 
-    console.log(
-      contactSubmitted,
-      shippingAddressSubmitted,
-      billingAddressSubmitted,
-      shippingMethodSubmitted
-    )
-
     if (
       !contactSubmitted ||
       !shippingAddressSubmitted ||

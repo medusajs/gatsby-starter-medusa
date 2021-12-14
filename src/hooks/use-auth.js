@@ -27,7 +27,6 @@ export const useAuth = () => {
       const response = await loginCustomer(values)
 
       if (response.error) {
-        console.log(response.error)
         setStatus({ authError: response.error })
         return
       }

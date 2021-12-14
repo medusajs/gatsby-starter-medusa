@@ -167,8 +167,6 @@ export const useReturn = (initialValues = null) => {
       return
     }
 
-    console.log(exchangeItems)
-
     if (exchangeItems.length > 0) {
       const swap = await client.swaps
         .create({

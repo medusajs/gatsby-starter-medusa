@@ -3,7 +3,8 @@ import React from "react"
 import Layout from "./src/components/layout"
 import { MedusaProvider } from "./src/context/medusa-context"
 
-const BASE_URL = process.env.MEDUSA_API_URL || "http://localhost:9000"
+const BASE_URL =
+  process.env.GATSBY_MEDUSA_BACKEND_URL || "http://localhost:9000"
 
 const medusaClient = new Medusa({ baseUrl: BASE_URL })
 

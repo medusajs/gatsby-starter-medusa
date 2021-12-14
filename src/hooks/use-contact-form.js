@@ -39,7 +39,6 @@ export const useContactForm = setState => {
         setSubmitting(false)
       }
 
-      console.log("Update step")
       setStatus({ success: "Contact info updated." })
       setSubmitting(false)
       setState(1)

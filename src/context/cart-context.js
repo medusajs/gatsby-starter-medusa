@@ -84,7 +84,6 @@ export const CartProvider = props => {
 
   const setLocalId = id => {
     if (localStorage) {
-      console.log("SETTING LOCAL!")
       localStorage.setItem(CART_ID, id)
       cartId.current = id
     }

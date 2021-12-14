@@ -43,7 +43,6 @@ const ReturnConfirmed = ({ location }) => {
             }
           })
 
-          console.log(stateReturn)
           setItems(returnedItems)
         }
       }
