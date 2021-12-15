@@ -1,6 +1,7 @@
 import { Menu } from "@headlessui/react"
 import React from "react"
 import { useRegion } from "../../hooks/use-region"
+import { useRegionDisabled } from "../../hooks/use-region-disabled"
 import { classNames } from "../../utils/class-names"
 import PopoverTransition from "../popover-transition"
 
@@ -12,12 +13,20 @@ const RegionPopover = () => {
     actions: { updateRegion },
   } = useRegion()
 
+  const disabled = useRegionDisabled()
+
   const handleSelect = async (region, country) => {
     updateRegion(region, country.display_name)
   }
 
   return (
-    <Menu as="div" className="relative inline-block text-left">
+    <Menu
+      as="div"
+      className={classNames(
+        disabled ? "hidden" : "inline-block",
+        "relative text-left"
+      )}
+    >
       <div>
         <Menu.Button className="inline-flex justify-center w-full px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:text-gray-600">
           {country} / {region?.currency_code?.toUpperCase()}
