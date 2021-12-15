@@ -41,8 +41,6 @@ export const useShippingAddressForm = setState => {
           billing_address: billingAddress,
         }
 
-        console.log(payload)
-
         updateCart(payload)
       } catch (error) {
         setStatus({ error: "An error has occurred, please try again." })

@@ -20,16 +20,13 @@ const DiscountField = () => {
       discount_code: Yup.string().required("Discount code can't be empty"),
     }),
     onSubmit: async (values, { setErrors }) => {
-      const response = await addDiscount(values.discount_code)
-
-      if (response.error) {
-        setErrors({ discount_code: "Invalid code" })
-        return
-      }
-
-      const codeResponse = response.cart.discounts[0].code
-
-      setCode(codeResponse)
+      await addDiscount(values.discount_code)
+        .then(() => {
+          setCode(values.discount_code)
+        })
+        .catch(_ => {
+          setErrors({ discount_code: "Invalid code" })
+        })
     },
   })
 
@@ -60,7 +57,7 @@ const DiscountField = () => {
               formik={discountForm}
             />
             <div className="mx-2" />
-            <button className="btn-ui" onClick={handleSubmit}>
+            <button className="btn-ui" onClick={handleSubmit} type="submit">
               Apply
             </button>
           </Fragment>

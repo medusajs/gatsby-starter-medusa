@@ -5,11 +5,13 @@ import ManualPayment from "./manual-payment"
 const Payment = ({ cartId = null }) => {
   const {
     cart,
-    actions: { setPaymentSession, createPaymentSession },
+    actions: { createPaymentSession },
   } = useCart()
 
   useEffect(() => {
-    if (!cart.payment_sessions?.length > 0) {
+    const cartIdentifier = cartId || cart.id
+
+    if (cartIdentifier && !cart.payment_sessions?.length > 0) {
       return createPaymentSession(cartId)
     }
   }, [cart, cartId])
@@ -21,12 +23,7 @@ const Payment = ({ cartId = null }) => {
         cart.payment_sessions.map(ps => {
           switch (ps.provider_id) {
             case "manual":
-              return (
-                <ManualPayment
-                  key="manual"
-                  setPaymentSession={() => setPaymentSession("manual", cartId)}
-                />
-              )
+              return <ManualPayment key="manual" />
             default:
               return null
           }

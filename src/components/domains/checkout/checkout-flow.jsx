@@ -17,13 +17,10 @@ import CheckoutSummary from "./checkout-summary"
 const CheckoutFlow = () => {
   const {
     cart,
-    actions: { getCartShippingOptions, addShippingMethod },
+    actions: { getCartShippingOptions },
   } = useCart()
   const { state, setState } = useCheckoutFlow()
   const [shippingOptions, setShippingOptions] = useState([])
-  // const {
-  //   shippingMethod: { getShippingOptions },
-  // } = useCheckout()
 
   useEffect(() => {
     const fetchShippingOptions = async () => {
@@ -64,19 +61,15 @@ const CheckoutFlow = () => {
       key: 0,
       completed: cart?.email !== null,
       controller: contactForm,
-      children: (
-        <CheckoutContact controller={contactForm} setState={setState} />
-      ),
+      children: <CheckoutContact controller={contactForm} />,
       handleSubmit: contactForm.handleSubmit,
     },
     {
       title: "Address",
       key: 1,
-      completed: cart?.shipping_address !== null,
+      completed: _.isEmpty(cart?.shipping_address),
       controller: shippingAddressForm,
-      children: (
-        <CheckoutAddress controller={shippingAddressForm} setState={setState} />
-      ),
+      children: <CheckoutAddress controller={shippingAddressForm} />,
       handleSubmit: shippingAddressForm.handleSubmit,
     },
     {
