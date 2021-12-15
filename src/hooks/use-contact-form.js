@@ -2,10 +2,8 @@ import { useFormik } from "formik"
 import Validator from "../utils/validator"
 import { useCart } from "./use-cart"
 import { useCustomer } from "./use-customer"
-import { useMedusa } from "./use-medusa"
 
 export const useContactForm = setState => {
-  const client = useMedusa()
   const {
     cart,
     actions: { updateCart },
@@ -27,13 +25,7 @@ export const useContactForm = setState => {
       }
 
       try {
-        const cartRes = await client.carts
-          .update(cart.id, {
-            email: values.email,
-          })
-          .then(({ cart }) => cart)
-
-        updateCart(cartRes)
+        updateCart({ email: values.email })
       } catch (error) {
         setStatus({ error: "An error has occurred, please try again." })
         setSubmitting(false)

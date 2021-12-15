@@ -1,7 +1,7 @@
 import React from "react"
 import Field from "../forms/field"
 
-const CheckoutContact = ({ controller, setState }) => {
+const CheckoutContact = ({ controller }) => {
   return (
     <div className="mt-3 mb-6">
       <Field

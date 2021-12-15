@@ -93,7 +93,12 @@ export const CartProvider = props => {
   const addItem = async item => {
     setLoading(true)
 
-    const cartId = cart.id
+    let cartId = cart.id
+
+    if (!cartId) {
+      const newCart = await client.carts.create().then(({ cart }) => cart)
+      cartId = newCart.id
+    }
 
     return client.carts.lineItems.create(cartId, item).then(({ cart }) => {
       setCart(cart)
@@ -130,10 +135,12 @@ export const CartProvider = props => {
 
     const cartId = cart.id
 
-    return client.carts.discounts.create(cartId, discount).then(({ cart }) => {
-      setCart(cart)
-      setLoading(false)
-    })
+    return client.carts
+      .update(cartId, { discounts: [{ code: discount }] })
+      .then(({ cart }) => {
+        setCart(cart)
+        setLoading(false)
+      })
   }
 
   const getCartShippingOptions = async (providedCartId = null) => {

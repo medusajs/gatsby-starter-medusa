@@ -4,7 +4,7 @@ import Field from "../forms/field"
 import Select from "../forms/select"
 import SplitField from "../forms/split-field"
 
-const CheckoutAddress = ({ controller, setState }) => {
+const CheckoutAddress = ({ controller }) => {
   const [countries, setCountries] = useState([])
   const { region } = useRegion()
 
