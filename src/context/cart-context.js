@@ -74,6 +74,14 @@ export const CartProvider = props => {
 
       const cartId = cart.id
 
+      if (cart.region) {
+        const isEqual = cart.region.id === region.id
+        if (isEqual) {
+          setLoading(false)
+          return
+        }
+      }
+
       const cartRes = await client.carts
         .update(cartId, { region_id: region.id })
         .then(({ cart }) => cart)
