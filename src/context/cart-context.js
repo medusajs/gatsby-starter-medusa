@@ -96,7 +96,7 @@ export const CartProvider = props => {
     if (cart.id) {
       updateCartRegion()
     }
-  }, [cart.id, region?.id, client.carts])
+  }, [cart.id, cart.region, region?.id, client.carts])
 
   const addItem = async item => {
     setLoading(true)
@@ -106,6 +106,7 @@ export const CartProvider = props => {
     if (!cartId) {
       const newCart = await client.carts.create().then(({ cart }) => cart)
       cartId = newCart.id
+      setCartItem(newCart)
     }
 
     return client.carts.lineItems.create(cartId, item).then(({ cart }) => {

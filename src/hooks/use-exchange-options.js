@@ -1,9 +1,7 @@
 import { graphql, useStaticQuery } from "gatsby"
-import { useCallback, useState } from "react"
+import { useCallback } from "react"
 
 export const useExchangeOptions = (item, currencyCode) => {
-  const [selectedExchange, setSelectedExchange] = useState(null)
-
   const { raw } = useStaticQuery(graphql`
     query {
       raw: allMedusaProducts {
@@ -61,9 +59,5 @@ export const useExchangeOptions = (item, currencyCode) => {
     return []
   }, [item, currencyCode, products])
 
-  const handleAddExcange = (exchangeOption, quantity) => {
-    setSelectedExchange({ ...exchangeOption, quantity })
-  }
-
-  return { selectedExchange, actions: { getExchangeOptions, handleAddExcange } }
+  return getExchangeOptions
 }
