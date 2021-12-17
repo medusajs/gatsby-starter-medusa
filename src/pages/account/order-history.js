@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
-import AccountLayout from "../../components/domains/account/account-layout"
-import OrderHistoryEntry from "../../components/domains/orders/order-history-entry"
-import SearchEngineOptimization from "../../components/seo"
+import AccountLayout from "../../components/account/account-layout"
+import OrderHistoryEntry from "../../components/orders/order-history-entry"
+import SearchEngineOptimization from "../../components/utility/seo"
 import { useCustomer } from "../../hooks/use-customer"
 
 const OrderHistory = () => {

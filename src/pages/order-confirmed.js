@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
-import OrderCompletedItem from "../components/domains/orders/order-completed-item"
-import SearchEngineOptimization from "../components/seo"
-import Totals from "../components/totals"
+import Totals from "../components/checkout/totals"
+import OrderCompletedItem from "../components/orders/order-completed-item"
+import SearchEngineOptimization from "../components/utility/seo"
 
 const OrderConfirmed = ({ location }) => {
   const [order, setOrder] = useState(undefined)

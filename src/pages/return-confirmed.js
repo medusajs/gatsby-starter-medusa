@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
-import ReturnCompletedItem from "../components/domains/returns/return-completed.item"
-import SearchEngineOptimization from "../components/seo"
-import { useOrder } from "../hooks/use-order"
+import ReturnCompletedItem from "../components/returns/return-completed.item"
+import SearchEngineOptimization from "../components/utility/seo"
+import { useRetrieveOrder } from "../hooks/use-order"
 import { formatPrice } from "../utils/format-price"
 
 const ReturnConfirmed = ({ location }) => {
@@ -11,9 +11,7 @@ const ReturnConfirmed = ({ location }) => {
   const [refundAmount, setRefundAmount] = useState(0)
   const [loading, setLoading] = useState(true)
 
-  const {
-    actions: { retrieve },
-  } = useOrder()
+  const retrieve = useRetrieveOrder(location.state?.confirmedReturn?.order_id)
 
   useEffect(() => {
     const getReturn = async () => {
@@ -25,7 +23,7 @@ const ReturnConfirmed = ({ location }) => {
 
         setRefundAmount(stateReturn.refund_amount)
 
-        const order = await retrieve(stateReturn.order_id)
+        const order = await retrieve()
 
         if (order) {
           setCurrencyCode(order.currency_code)
@@ -50,7 +48,7 @@ const ReturnConfirmed = ({ location }) => {
     }
 
     getReturn()
-  }, [location.state])
+  }, [location.state, retrieve])
 
   return !loading && confirmedReturn ? (
     <div className="layout-base flex justify-center pb-16">

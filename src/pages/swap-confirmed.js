@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import SearchEngineOptimization from "../components/seo"
+import SearchEngineOptimization from "../components/utility/seo"
 
 const OrderConfirmed = ({ location }) => {
   const [success, setSuccess] = useState(false)

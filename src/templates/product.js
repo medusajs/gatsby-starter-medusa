@@ -1,12 +1,12 @@
 import { graphql, navigate } from "gatsby"
 import React, { useEffect } from "react"
-import ProductExpandable from "../components/domains/products/product-expandable"
-import ProductImages from "../components/domains/products/product-images"
-import ProductListItem from "../components/domains/products/product-list-item"
-import ProductOptionSelector from "../components/domains/products/product-option-selector"
-import Grid from "../components/domains/utility/grid"
-import QuantitySelector from "../components/quantity-selector"
-import SearchEngineOptimization from "../components/seo"
+import ProductExpandable from "../components/products/product-expandable"
+import ProductImages from "../components/products/product-images"
+import ProductListItem from "../components/products/product-list-item"
+import ProductOptionSelector from "../components/products/product-option-selector"
+import QuantitySelector from "../components/products/quantity-selector"
+import Grid from "../components/utility/grid"
+import SearchEngineOptimization from "../components/utility/seo"
 import { useCart } from "../hooks/use-cart"
 import { useProduct } from "../hooks/use-product"
 import { useRegion } from "../hooks/use-region"
@@ -19,6 +19,7 @@ const Product = ({ data, pageContext }) => {
   const { regionId, taxRate, currencyCode, handle } = pageContext
   const details = pickDetails(product)
   const {
+    loading,
     actions: { addItem },
   } = useCart()
 
@@ -82,6 +83,7 @@ const Product = ({ data, pageContext }) => {
             <button
               className="btn-ui mr-2 px-12"
               onClick={() => handleAddToCart()}
+              disabled={loading}
             >
               Add to bag
             </button>

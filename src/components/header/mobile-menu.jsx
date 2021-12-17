@@ -3,6 +3,8 @@ import { Link } from "gatsby"
 import React, { Fragment } from "react"
 import { useCustomer } from "../../hooks/use-customer"
 import { useRegion } from "../../hooks/use-region"
+import { useRegionDisabled } from "../../hooks/use-region-disabled"
+import { classNames } from "../../utils/class-names"
 
 const MobileMenu = ({ open, setOpen }) => {
   const pages = [
@@ -26,6 +28,8 @@ const MobileMenu = ({ open, setOpen }) => {
     country,
     actions: { updateRegion },
   } = useRegion()
+
+  const disabled = useRegionDisabled()
 
   const { customer } = useCustomer()
 
@@ -109,46 +113,50 @@ const MobileMenu = ({ open, setOpen }) => {
             <div className="border-t border-gray-200 py-6 px-4 space-y-6">
               {customer ? (
                 <Fragment>
-              <div className="flow-root">
-                <Link
-                  to="/account"
-                  className="-m-2 p-2 block font-medium text-gray-900"
-                >
-                  Account
-                </Link>
-              </div>
-              <div className="flow-root">
-                <Link
-                  to="/account/order-history"
-                  className="-m-2 p-2 block font-medium text-gray-900"
-                >
-                  Order History
-                </Link>
-              </div>
-              </Fragment>
+                  <div className="flow-root">
+                    <Link
+                      to="/account"
+                      className="-m-2 p-2 block font-medium text-gray-900"
+                    >
+                      Account
+                    </Link>
+                  </div>
+                  <div className="flow-root">
+                    <Link
+                      to="/account/order-history"
+                      className="-m-2 p-2 block font-medium text-gray-900"
+                    >
+                      Order History
+                    </Link>
+                  </div>
+                </Fragment>
               ) : (
                 <Fragment>
-                <div className="flow-root">
-                <Link
-                  to="/sign-in"
-                  className="-m-2 p-2 block font-medium text-gray-900"
-                >
-                  Sign in
-                </Link>
-              </div>
-              <div className="flow-root">
-                <Link
-                  to="/sign-up"
-                  className="-m-2 p-2 block font-medium text-gray-900"
-                >
-                  Create account
-                </Link>
-              </div>
-              </Fragment>
+                  <div className="flow-root">
+                    <Link
+                      to="/sign-in"
+                      className="-m-2 p-2 block font-medium text-gray-900"
+                    >
+                      Sign in
+                    </Link>
+                  </div>
+                  <div className="flow-root">
+                    <Link
+                      to="/sign-up"
+                      className="-m-2 p-2 block font-medium text-gray-900"
+                    >
+                      Create account
+                    </Link>
+                  </div>
+                </Fragment>
               )}
             </div>
 
-            <div className="border-t border-gray-200 py-6 px-4">
+            <div
+              className={classNames(
+                disabled ? "hidden" : "border-t border-gray-200 py-6 px-4"
+              )}
+            >
               <select
                 className="shadow rounded-md border-none"
                 onChange={handleRegionChange}

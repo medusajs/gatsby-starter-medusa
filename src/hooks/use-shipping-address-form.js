@@ -2,10 +2,8 @@ import { useFormik } from "formik"
 import Validator from "../utils/validator"
 import { useCart } from "./use-cart"
 import { useCustomer } from "./use-customer"
-import { useMedusa } from "./use-medusa"
 
 export const useShippingAddressForm = setState => {
-  const client = useMedusa()
   const {
     cart,
     actions: { updateCart },
@@ -32,26 +30,13 @@ export const useShippingAddressForm = setState => {
     onSubmit: async (values, { setSubmitting, setStatus }) => {
       setSubmitting(true)
 
-      if (!cart?.id) {
-        setStatus({ error: "An error has occurred, please try again." })
-        setSubmitting(false)
-      }
-
       try {
-        const shippingAddress = values
-        const billingAddress = values
-
-        delete billingAddress.phone
-
         const payload = {
-          shipping_address: shippingAddress,
-          billing_address: billingAddress,
+          shipping_address: values,
+          billing_address: values,
         }
 
-        const cartRes = await client.carts
-          .update(cart.id, payload)
-          .then(({ cart }) => cart)
-        updateCart(cartRes)
+        updateCart(payload)
       } catch (error) {
         setStatus({ error: "An error has occurred, please try again." })
       }

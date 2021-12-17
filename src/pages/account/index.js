@@ -1,10 +1,10 @@
 import { useFormik } from "formik"
 import React from "react"
 import * as Yup from "yup"
-import AccountLayout from "../../components/domains/account/account-layout"
-import Field from "../../components/domains/forms/field"
-import FormContainer from "../../components/domains/forms/form-container"
-import SearchEngineOptimization from "../../components/seo"
+import AccountLayout from "../../components/account/account-layout"
+import Field from "../../components/forms/field"
+import FormContainer from "../../components/forms/form-container"
+import SearchEngineOptimization from "../../components/utility/seo"
 import { useCustomer } from "../../hooks/use-customer"
 
 const Account = () => {
