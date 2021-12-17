@@ -26,4 +26,57 @@ Medusa is an open-source headless commerce engine that enables developers to cre
 
 > **Prerequisites**: To use the starter you should have a Medusa server running locally on port 9000. Check out [medusa-starter-default](https://github.com/medusajs/medusa-starter-default) for a quick setup.
 
-## Quick Start
+## 🚀 Quick Start
+
+1. **Create a new Gatsby project**
+
+```zsh
+  npx gatsby new my-medusa-storefront https://github.com/medusajs/gatsby-starter-medusa
+
+  # or
+
+  git clone https://github.com/medusajs/gatsby-starter-medusa.git my-medusa-storefront
+```
+
+2. **Install dependencies**
+
+```zsh
+  cd my-medusa-storefront
+  yarn
+```
+
+3. **Link to your backend**
+
+In the folder `my-medusa-storefront` you should have a `.env.template` file with the following content:
+
+```shell
+GATSBY_MEDUSA_BACKEND_URL=http://localhost:9000
+```
+
+Before you can start developing your site you first need to copy this file into a new file named `.env.development`.
+
+```zsh
+mv .env.template .env.development
+```
+
+Per default your Medusa server should be running on `localhost:9000`, but if you have changed this you will then need to replace `GATSBY_MEDUSA_BACKEND_URL` with the URL of your Medusa server.
+
+```zsh
+GATSBY_MEDUSA_BACKEND_URL=<link to your server>
+```
+
+4. **Start development**
+
+You should now be able to start developing your site.
+
+```zsh
+yarn start
+```
+
+5. **Open the source code and start editing!**
+
+   Your site is now running at `http://localhost:8000`!
+
+   _Note: You'll also see a second link: _`http://localhost:8000/___graphql`_. This is a tool you can use to experiment with querying your data. Learn more about using this tool in the [Gatsby tutorial](https://www.gatsbyjs.com/tutorial/part-five/#introducing-graphiql)._
+
+   Open the `my-medusa-starter` directory in your code editor of choice and edit `src/pages/index.jsx`. Save your changes and the browser will update in real time!
