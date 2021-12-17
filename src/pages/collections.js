@@ -1,8 +1,8 @@
 import { graphql } from "gatsby"
 import React from "react"
-import CollectionPreview from "../components/domains/categories/collection-preview"
-import Grid from "../components/domains/utility/grid"
-import SearchEngineOptimization from "../components/seo"
+import CollectionPreview from "../components/categories/collection-preview"
+import Grid from "../components/utility/grid"
+import SearchEngineOptimization from "../components/utility/seo"
 import { useCollections } from "../hooks/use-collections"
 
 const Collections = ({ data }) => {

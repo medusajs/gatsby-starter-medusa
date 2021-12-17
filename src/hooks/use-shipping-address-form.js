@@ -30,20 +30,11 @@ export const useShippingAddressForm = setState => {
     onSubmit: async (values, { setSubmitting, setStatus }) => {
       setSubmitting(true)
 
-      console.log(values)
-
       try {
-        const shippingAddress = values
-        const billingAddress = values
-
-        delete billingAddress.phone
-
         const payload = {
-          shipping_address: shippingAddress,
-          billing_address: billingAddress,
+          shipping_address: values,
+          billing_address: values,
         }
-
-        console.log(payload)
 
         updateCart(payload)
       } catch (error) {

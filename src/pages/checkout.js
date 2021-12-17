@@ -1,6 +1,6 @@
 import React from "react"
-import CheckoutFlow from "../components/domains/checkout/checkout-flow"
-import SearchEngineOptimization from "../components/seo"
+import CheckoutFlow from "../components/checkout/checkout-flow"
+import SearchEngineOptimization from "../components/utility/seo"
 
 const Checkout = () => {
   return (

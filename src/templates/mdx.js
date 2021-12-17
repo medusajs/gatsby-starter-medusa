@@ -2,9 +2,9 @@ import { MDXProvider } from "@mdx-js/react"
 import { graphql, Link } from "gatsby"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import React from "react"
-import Expandable from "../components/domains/mdx/expandable"
-import Spacing from "../components/domains/mdx/spacing"
-import SearchEngineOptimization from "../components/seo"
+import Expandable from "../components/mdx/expandable"
+import Spacing from "../components/mdx/spacing"
+import SearchEngineOptimization from "../components/utility/seo"
 
 const shortcodes = { Link, Expandable, Spacing }
 
