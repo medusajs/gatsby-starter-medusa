@@ -83,6 +83,7 @@ const MobileMenu = ({ open, setOpen }) => {
                 <Link
                   to={"/products"}
                   className="-m-2 p-2 block font-medium text-gray-900"
+                  onClick={() => setOpen(false)}
                 >
                   Products
                 </Link>
@@ -91,6 +92,7 @@ const MobileMenu = ({ open, setOpen }) => {
                 <Link
                   to={"/collections"}
                   className="-m-2 p-2 block font-medium text-gray-900"
+                  onClick={() => setOpen(false)}
                 >
                   Collections
                 </Link>
@@ -103,6 +105,7 @@ const MobileMenu = ({ open, setOpen }) => {
                   <Link
                     to={page.path}
                     className="-m-2 p-2 block font-medium text-gray-900"
+                    onClick={() => setOpen(false)}
                   >
                     {page.name}
                   </Link>
@@ -117,6 +120,7 @@ const MobileMenu = ({ open, setOpen }) => {
                     <Link
                       to="/account"
                       className="-m-2 p-2 block font-medium text-gray-900"
+                      onClick={() => setOpen(false)}
                     >
                       Account
                     </Link>
@@ -125,6 +129,7 @@ const MobileMenu = ({ open, setOpen }) => {
                     <Link
                       to="/account/order-history"
                       className="-m-2 p-2 block font-medium text-gray-900"
+                      onClick={() => setOpen(false)}
                     >
                       Order History
                     </Link>
@@ -136,6 +141,7 @@ const MobileMenu = ({ open, setOpen }) => {
                     <Link
                       to="/sign-in"
                       className="-m-2 p-2 block font-medium text-gray-900"
+                      onClick={() => setOpen(false)}
                     >
                       Sign in
                     </Link>
@@ -144,6 +150,7 @@ const MobileMenu = ({ open, setOpen }) => {
                     <Link
                       to="/sign-up"
                       className="-m-2 p-2 block font-medium text-gray-900"
+                      onClick={() => setOpen(false)}
                     >
                       Create account
                     </Link>
