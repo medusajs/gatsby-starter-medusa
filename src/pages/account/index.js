@@ -29,10 +29,6 @@ const Account = () => {
     }),
     onSubmit: async values => {
       const response = await updateCustomerDetails(values)
-
-      if (response.error) {
-        console.warn(response.error)
-      }
     },
   })
 
@@ -55,7 +51,6 @@ const Account = () => {
       })
 
       if (response.error) {
-        console.warn(response.error)
         return
       }
 

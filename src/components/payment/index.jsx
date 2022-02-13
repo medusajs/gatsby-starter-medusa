@@ -18,8 +18,6 @@ const Payment = ({ cartId = null }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart, cartId])
 
-  console.log("Payment", cart)
-
   return (
     <div>
       {cart && cart.payment_sessions ? (
