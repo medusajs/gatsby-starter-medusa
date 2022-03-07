@@ -60,7 +60,7 @@ export const CartProvider = props => {
         }
       }
 
-      const newCart = await client.carts.create().then(({ cart }) => cart)
+      const newCart = await client.carts.create({}).then(({ cart }) => cart)
       setCartItem(newCart)
       setLoading(false)
     }
@@ -104,7 +104,7 @@ export const CartProvider = props => {
     let cartId = cart.id
 
     if (!cartId) {
-      const newCart = await client.carts.create().then(({ cart }) => cart)
+      const newCart = await client.carts.create({}).then(({ cart }) => cart)
       cartId = newCart.id
       setCartItem(newCart)
     }
