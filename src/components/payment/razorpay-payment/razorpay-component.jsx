@@ -23,7 +23,7 @@ class RazorpayComponent extends React.Component {
   
   }
 
-  handleResponse(response) {
+  async handleResponse(response,completeOrder,setErrorMessage,setProcessing) {
     console.log(response);
     var values ={
         razorpay_signature : response.razorpay_signature,
@@ -31,9 +31,28 @@ class RazorpayComponent extends React.Component {
         payment_id : response.razorpay_payment_id,
         amount : response.amount
       }
-    return new Promise(paymentIntent=>(response))
+   await Promise.resolve(response).then
+   .then(({ error, paymentIntent }) => {
+    if (error) {
+      const pi = error.payment_intent;
+
+      if ((pi && pi.status === "requires_capture") ||
+        (pi && pi.status === "captured")) {
+        completeOrder();
+      }
+
+      setErrorMessage(error.message);
+      setProcessing(false);
+      return;
+    }
+    if ((paymentIntent && paymentIntent.status === "requires_capture") ||
+      paymentIntent.status === "captured") {
+      completeOrder();
+    }
+    return;
     
- }
+ })
+}
 
   handleChange(evt){
       console.log(evt.target.value)
@@ -45,31 +64,59 @@ class RazorpayComponent extends React.Component {
       var rzp1 = new window.Razorpay(options);
       rzp1.open();
   };*/
-  openPayModal(amt){
-    const script = document.createElement("script");
+  async openPayModal(session,cart, completeOrder,setErrorMessage,setProcessing){
+    /*const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
-    document.body.appendChild(script);
-    
-    var amount = amt * 100; //Razorpay consider the amount in paise
+    document.body.appendChild(script);*/
+    var amount_to_be_paid = session.data.amount
+    var amount = (amount_to_be_paid)>0?amount_to_be_paid* 100:0; //Razorpay consider the amount in paise
       var options = {
         "key": process.env.GATSBY_RAZORPAY_KEY,
         "amount": amount, // 2000 paise = INR 20, amount in paisa
         "name": "",
         "description": "",
-        'order_id':"",
+        "order_id":session.data.id,
+        "currency":session.data.currency,
         "prefill":{
-            "name":"NONAME",
-            "email":"EMAID",
-            "contact":"0000000"
+            "name":cart.billing_address.first_name + " "+ cart.billing_address.last_name,
+            "email":cart.email,
+            "contact":cart.shipping_address.phone
         },
         "notes": {
-          "address": "Noclude"
+          "address": cart.shipping_address,
+          "order_notes":session.data.notes
         },
         "theme": {
           "color": 1234
         },
-        "handler": this.handleResponse,
+        "handler": async function (response) {console.log(response);
+          
+          if (response?.error??false) {
+            const pi = response;
+            const error = response.error
+            console.log(error)
+           /* if ((pi && pi.status === "requires_capture") ||
+              (pi && pi.status === "captured")) {
+              completeOrder();
+            }*/
+      
+            setErrorMessage(error.description+";reason:"+error.reason);
+            setProcessing(false);
+            return;
+          }
+          else{
+          
+            session.data.razorpay_signature =response.razorpay_signature
+            session.data.razorpay_order_id = response.razorpay_order_id
+            session.data.payment_id = response.razorpay_payment_id
+            
+            completeOrder();
+              
+          }
+          return;
+          
+       },
       };
       let rzp = new window.Razorpay(options);
       rzp.open();  

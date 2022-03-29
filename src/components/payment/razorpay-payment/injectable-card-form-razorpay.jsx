@@ -45,33 +45,11 @@ const InjectableCardForm = ({ session }) => {
     const email = cart.email
     const address = cart.shipping_address
 
-    return razorpay.openPayModal(cart.total)  
+    let razorpayPaymentResponse = razorpay.openPayModal(session,cart,completeOrder,setErrorMessage,setProcessing)  ;
+
+    return razorpayPaymentResponse
     
-      .then(({ error, paymentIntent }) => {
-        if (error) {
-          const pi = error.payment_intent
-
-          if (
-            (pi && pi.status === "requires_capture") ||
-            (pi && pi.status === "captured")
-          ) {
-            completeOrder()
-          }
-
-          setErrorMessage(error.message)
-          setProcessing(false)
-          return
-        }
-
-        if (
-          (paymentIntent && paymentIntent.status === "requires_capture") ||
-          paymentIntent.status === "captured"
-        ) {
-          completeOrder()
-        }
-
-        return
-      })
+      
   }
 
   return (
