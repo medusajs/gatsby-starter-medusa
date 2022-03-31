@@ -6,12 +6,13 @@ import { MedusaProvider } from "./src/context/medusa-context"
 const BASE_URL =
   process.env.GATSBY_MEDUSA_BACKEND_URL || "http://localhost:9000"
 
+// @ts-ignore
 const medusaClient = new Medusa({ baseUrl: BASE_URL })
 
 export const wrapPageElement = ({ element, props }) => {
   return (
     <MedusaProvider client={medusaClient}>
-      <Layout {...props}>{element}</Layout>
+      <Layout{...props}>{...element}</Layout>
     </MedusaProvider>
   )
 }
