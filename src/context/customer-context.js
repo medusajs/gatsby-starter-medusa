@@ -134,14 +134,18 @@ export const CustomerProvider = props => {
   }, [me])
 
   return (
-    <CustomerContext.Provider{...props}
-      value={{...state, loading, actions:
-        {
+    <CustomerContext.Provider
+      {...props}
+      value={{
+        ...state,
+        loading,
+        actions: {
           createCustomer,
           loginCustomer,
           updateCustomerDetails,
           retrieveOrders,
         },
-      }}/>
+      }}
+    />
   )
 }

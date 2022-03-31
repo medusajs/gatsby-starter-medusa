@@ -44,7 +44,8 @@ export const plugins = [
   {
     resolve: `gatsby-source-medusa`,
     options: {
-      storeUrl: process.env.GATSBY_MEDUSA_BACKEND_URL || `http://localhost:9000`,
+      storeUrl:
+        process.env.GATSBY_MEDUSA_BACKEND_URL || `http://localhost:9000`,
     },
   },
 ]

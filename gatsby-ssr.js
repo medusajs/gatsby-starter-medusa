@@ -12,7 +12,7 @@ const medusaClient = new Medusa({ baseUrl: BASE_URL })
 export const wrapPageElement = ({ element, props }) => {
   return (
     <MedusaProvider client={medusaClient}>
-      <Layout{...props}>{...element}</Layout>
+      <Layout {...props}>{...element}</Layout>
     </MedusaProvider>
   )
 }
