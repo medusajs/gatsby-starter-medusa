@@ -1,6 +1,8 @@
 import Medusa from "@medusajs/medusa-js"
 import React from "react"
+// @ts-ignore
 import Layout from "./src/components/layout"
+// @ts-ignore
 import { MedusaProvider } from "./src/context/medusa-context"
 
 const BASE_URL =
