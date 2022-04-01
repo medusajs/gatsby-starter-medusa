@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { navigate } from "gatsby"
 import React, { useEffect, useState } from "react"
 import ShippingOptions from "../components/shipping/shipping-options"

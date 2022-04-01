@@ -8,30 +8,29 @@ import SearchEngineOptimization from "../components/utility/seo"
 import { useCollections } from "../hooks/use-collections"
 
 const IndexPage = ({ data }) => {
-  const { products, collections } = data
-  const prods = data.products.edges.map(edge => edge.node)
-  const collectionPreviews = useCollections(collections, products)
+  const { products, collections } = data;
+  const prods = data.products.edges.map(edge => edge.node);
+  const collectionPreviews = useCollections(collections, products);
 
   return (
     <div>
-      <SearchEngineOptimization title="Home" />
+      <SearchEngineOptimization title="Home"/>
       <div className="bg-ui-light pb-12 lg:pb-0 w-full px-4 sm:px-6 lg:px-12">
-        <div className="flex flex-col lg:flex-row items-center max-w-screen-2xl mx-auto">
-          <StaticImage
-            src="../images/hero-merch.png"
+        <div className="flex flex-col lg:flex-row items-center max-w-screen-2xlmx-auto">
+          <StaticImage src="../images/hero-merch.png"
             alt="A black Medusa hoodie and a white Medusa coffee mug"
             placeholder="tracedSVG"
-            className="w-full lg:w-1/2 h-auto"
-          />
+            className="w-full lg:w-1/2 h-auto"/>
           <div>
-            <h1 className="text-4xl">CLAIM YOUR MERCH</h1>
+            <h1 className="text-4xl"> CLAIM YOUR MERCH </h1>
             <p className="mt-2 text-lg font-normal">
               Contribute to Medusa and receive free merch
-              <br />
+              <br/>
               as a token of our appreciation
             </p>
             <button className="btn-ui mt-4 min-w-full lg:min-w-0">
               Learn more
+            // @ts-ignore
             </button>
           </div>
         </div>
@@ -39,23 +38,19 @@ const IndexPage = ({ data }) => {
       <div className="layout-base my-12 min-h-0">
         <Grid
           title={"Featured"}
-          cta={{ to: "/products", text: "Browse all products" }}
-        >
+          cta={{ to: "/products", text: "Browse all products" }}>
           {prods.slice(0, 4).map(p => {
             return <ProductListItem product={p} key={p.handle} />
           })}
         </Grid>
         <div className="mt-12">
-          <Grid
-            title="Shop by collection"
-            cta={{ to: "/collections", text: "Browse all collections" }}
-          >
+          <Grid title="Shop by collection" cta={{ to: "/collections", text:"Browse all collections" }}>
+
             {collectionPreviews.slice(0, 4).map(collection => {
               return (
                 <CollectionPreview
                   key={collection.id}
-                  collection={collection}
-                />
+                  collection={collection}/>
               )
             })}
           </Grid>

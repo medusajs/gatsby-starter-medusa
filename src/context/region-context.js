@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { graphql, useStaticQuery } from "gatsby"
 import React, { createContext, useEffect, useReducer } from "react"
 
@@ -91,10 +92,5 @@ export const RegionProvider = props => {
     })
   }
 
-  return (
-    <RegionContext.Provider
-      {...props}
-      value={{ ...state, regions, updateRegion }}
-    />
-  )
+  return (<RegionContext.Provider{...props}value={{ ...state, regions, updateRegion }}/>)
 }
