@@ -1,3 +1,10 @@
+require("dotenv").config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
+const CONTENTFUL_ACCESS_TOKEN=123456
+const CONTENTFUL_SPACE_ID=78910
+
 const Medusa = require("@medusajs/medusa-js").default
 
 const toKebabCase = str =>
@@ -39,6 +46,7 @@ exports.sourceNodes = async function ({
   createContentDigest,
   reporter,
 }) {
+  // @ts-ignore
   const client = new Medusa({ baseUrl: BASE_URL })
   const { createNode } = actions
 
