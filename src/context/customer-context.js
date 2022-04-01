@@ -43,10 +43,12 @@ export const CustomerProvider = props => {
   const client = useMedusa()
 
   const updateCustomer = customer => {
+    // @ts-ignore
     dispatch({ type: ACTIONS.UPDATE_CUSTOMER, payload: customer })
   }
 
   const clearCustomer = useCallback(() => {
+    // @ts-ignore
     dispatch({ type: ACTIONS.CLEAR_CUSTOMER })
   }, [])
 

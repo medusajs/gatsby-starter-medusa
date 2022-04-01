@@ -56,6 +56,7 @@ export const CartProvider = props => {
             return
           }
         } catch (e) {
+          // @ts-ignore
           localStorage.setItem(CART_ID, null)
         }
       }
@@ -75,6 +76,7 @@ export const CartProvider = props => {
       const cartId = cart.id
 
       if (cart.region) {
+        // @ts-ignore
         const isEqual = cart.region.id === region.id
         if (isEqual) {
           setLoading(false)
@@ -83,6 +85,7 @@ export const CartProvider = props => {
       }
 
       const cartRes = await client.carts
+        // @ts-ignore
         .update(cartId, { region_id: region.id })
         .then(({ cart }) => cart)
 
@@ -96,6 +99,7 @@ export const CartProvider = props => {
     if (cart.id) {
       updateCartRegion()
     }
+  // @ts-ignore
   }, [cart.id, cart.region, region?.id, client.carts])
 
   const addItem = async item => {

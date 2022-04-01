@@ -1,0 +1,13 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "atlestroms@gmail.com",
+            "database": "D:\\Entreprerneur\\TMM\\min-butikk\\medusa-db.sql",
+            "group": "member",
+            "password": "Post1234!!!!"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

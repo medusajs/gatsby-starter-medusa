@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Medusa from "@medusajs/medusa-js"
 import React from "react"
 import Layout from "./src/components/layout"
@@ -12,7 +13,7 @@ const medusaClient = new Medusa({ baseUrl: BASE_URL })
 export const wrapPageElement = ({ element, props }) => {
   return (
     <MedusaProvider client={medusaClient}>
-      <Layout {...props}>{element}</Layout>
+      <Layout {...props}>{...element}</Layout>
     </MedusaProvider>
   )
 }

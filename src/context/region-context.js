@@ -7,6 +7,7 @@ const defaultRegionContext = {
   /**
    * @type {string}
    */
+  // @ts-ignore
   country: undefined,
   regions: [],
   updateRegion: () => {},
@@ -79,18 +80,20 @@ export const RegionProvider = props => {
         }
       }
     }
-
-    initRegion()
+      initRegion()
   }, [])
 
   const updateRegion = (region, country) => {
     localStorage.setItem(REGION, JSON.stringify(region))
     localStorage.setItem(COUNTRY, JSON.stringify(country))
+    // @ts-ignore
     dispatch({
       type: ACTIONS.UPDATE_REGION,
       payload: { region: region, country: country },
     })
   }
 
-  return (<RegionContext.Provider{...props}value={{ ...state, regions, updateRegion }}/>)
+  return (
+    <RegionContext.Provider{...props}value={{ ...state, regions, updateRegion }}/>
+  )
 }

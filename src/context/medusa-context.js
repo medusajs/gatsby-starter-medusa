@@ -1,27 +1,20 @@
 import Medusa from "@medusajs/medusa-js"
-import React, { createContext } from "react"
-import { CartProvider } from "./cart-context"
-import { CustomerProvider } from "./customer-context"
-import { RegionProvider } from "./region-context"
+import React from "react"
+// @ts-ignore
+import Layout from "./src/components/layout"
+// @ts-ignore
+import { MedusaProvider } from "./src/context/medusa-context"
 
-const defaultMedusaContext = {
-  /**
-   * @type {Medusa}
-   */
-  client: null,
-}
+const BASE_URL =
+  process.env.GATSBY_MEDUSA_BACKEND_URL || "http://localhost:9000"
 
-const MedusaContext = createContext(defaultMedusaContext)
-export default MedusaContext
+// @ts-ignore
+const medusaClient = new Medusa({ baseUrl: BASE_URL })
 
-export const MedusaProvider = ({ children, client }) => {
+export const wrapPageElement = ({ element, props }) => {
   return (
-    <MedusaContext.Provider value={{ client }}>
-      <CustomerProvider>
-        <RegionProvider>
-          <CartProvider>{children}</CartProvider>
-        </RegionProvider>
-      </CustomerProvider>
-    </MedusaContext.Provider>
+    <MedusaProvider client={medusaClient}>
+      <Layout {...props}>{element}</Layout>
+    </MedusaProvider>
   )
 }

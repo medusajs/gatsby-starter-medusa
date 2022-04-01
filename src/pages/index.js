@@ -1,6 +1,6 @@
 import { graphql } from "gatsby"
 import { StaticImage } from "gatsby-plugin-image"
-import React from "react"
+import React, { useState, useEffect } from "react"
 import CollectionPreview from "../components/categories/collection-preview"
 import ProductListItem from "../components/products/product-list-item"
 import Grid from "../components/utility/grid"
