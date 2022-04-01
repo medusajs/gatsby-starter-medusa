@@ -1,12 +1,12 @@
 require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
-})
+});
 
 export const siteMetadata = {
   title: `Medusa Gatsby Starter`,
   description: `Kick off your next, great e-commerce project with this default starter with Medusa, Gatsby and common dev tools.`,
   author: `@medusajs`,
-}
+};
 export const plugins = [
   `gatsby-plugin-react-helmet`,
   {
@@ -48,4 +48,4 @@ export const plugins = [
         process.env.GATSBY_MEDUSA_BACKEND_URL || `http://localhost:9000`,
     },
   },
-]
+];
