@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Medusa from "@medusajs/medusa-js"
 import React from "react"
 import Layout from "./src/components/layout"

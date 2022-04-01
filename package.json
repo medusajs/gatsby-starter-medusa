@@ -29,6 +29,7 @@
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
         "react-helmet": "^6.1.0",
+        "upgrade": "^1.1.0",
         "yup": "^0.32.11"
     },
     "devDependencies": {
