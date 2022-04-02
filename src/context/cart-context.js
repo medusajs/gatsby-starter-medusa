@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react"
 import { useMedusa } from "../hooks/use-medusa"
 import { useRegion } from "../hooks/use-region"
+const _ = require('lodash');
 
 const defaultCartContext = {
   cart: {
@@ -19,6 +20,7 @@ const defaultCartContext = {
     completeCart: async () => {},
     getCartShippingOptions: async () => {},
     addShippingMethod: async () => {},
+    updatePaymentSession : async() =>{},
   },
 }
 
@@ -198,6 +200,20 @@ export const CartProvider = props => {
     })
   }
 
+  const updatePaymentSession = async (providedCartId = null , providerId = null,data) => {
+    setLoading(true)
+
+     const cartId = providedCartId ?? cart.id
+     
+
+    return client.carts.updatePaymentSession(cartId, providerId ,{data}).then(({ cart }) => {
+      setCart(cart)
+      setLoading(false)
+      return cart
+    },reason=>{
+      console.log("update failed"+reason)})
+  }
+
   const setPaymentSession = async (providerId, providedCartId = null) => {
     setLoading(true)
 
@@ -242,6 +258,7 @@ export const CartProvider = props => {
           getCartShippingOptions,
           addShippingMethod,
           updateCart,
+          updatePaymentSession
         },
       }}
     />

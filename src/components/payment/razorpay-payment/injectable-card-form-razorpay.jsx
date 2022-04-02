@@ -4,33 +4,40 @@ import React, { useState } from "react"
 import { useCart } from "../../../hooks/use-cart"
 import RazorpayComponent from "./razorpay-component"
 
-const InjectableCardForm = ({ session }) => {
+const InjectableCardFormRazorpay = ({ session }) => {
   const [errorMessage, setErrorMessage] = useState(undefined)
   const [processing, setProcessing] = useState(false)
   const {
     cart,
-    actions: { completeCart, setPaymentSession },
+    actions: { completeCart, setPaymentSession,updatePaymentSession },
   } = useCart()
 
   //const stripe = useStripe()
   //const elements = useElements()
   const razorpay = new RazorpayComponent()
   
-  const completeOrder = async () => {
+  const completeOrder = async (response) => {
     const cart = await setPaymentSession("razorpay")
 
     if (!cart) {
       setProcessing(false)
       return
     }
+    const cart_updated = await updatePaymentSession(cart.id,"razorpay",response)
 
-    const order = await completeCart(cart.id)
+    if (!cart_updated) {
+      setProcessing(false)
+      return
+    }
+
+    const order = await completeCart(cart_updated.id)
 
     if (!order) {
       setProcessing(false)
       return
     }
 
+   
     setProcessing(false)
     navigate("/order-confirmed", { state: { order } })
   }
@@ -94,4 +101,4 @@ const InjectableCardForm = ({ session }) => {
     </div>
   )
 }
-export default InjectableCardForm
+export default InjectableCardFormRazorpay

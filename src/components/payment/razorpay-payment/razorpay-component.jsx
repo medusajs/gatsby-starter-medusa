@@ -106,18 +106,19 @@ class RazorpayComponent extends React.Component {
             return;
           }
           else{
-          
-            session.data.razorpay_signature =response.razorpay_signature
-            session.data.razorpay_order_id = response.razorpay_order_id
-            session.data.payment_id = response.razorpay_payment_id
+           
             
-            completeOrder();
+           /* session.data.razorpay_signature =response.razorpay_signature
+            session.data.razorpay_order_id = response.razorpay_order_id
+            session.data.razorpay_payment_id = response.razorpay_payment_id
+           */ 
+          completeOrder(response);
               
           }
           return;
           
        },
-      };
+      }; 
       let rzp = new window.Razorpay(options);
       rzp.open();  
   };
