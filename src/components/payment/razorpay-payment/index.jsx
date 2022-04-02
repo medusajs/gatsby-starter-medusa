@@ -1,7 +1,7 @@
 import React, { useMemo } from "react"
 import { useCart } from "../../../hooks/use-cart"
 import RazorpayComponent from "./razorpay-component"
-import InjectableCardForm from "./injectable-card-form-razorpay"
+import InjectableCardFormRazorpay from "./injectable-card-form-razorpay"
 
 const RAZORPAY_KEY = process.env.GATSBY_RAZORPAY_KEY || ""
 
@@ -27,7 +27,7 @@ const RazorpayPayment = ({session}) => {
   }
 
   return (
-    <InjectableCardForm session={razorpaySession} />
+    <InjectableCardFormRazorpay session={razorpaySession} />
     
   )
 }
