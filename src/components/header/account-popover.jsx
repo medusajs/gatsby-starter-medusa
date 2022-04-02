@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Menu } from "@headlessui/react"
 import { Link } from "gatsby"
 import React, { Fragment, useMemo } from "react"

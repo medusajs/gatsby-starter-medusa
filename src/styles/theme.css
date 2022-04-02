@@ -1,7 +1,7 @@
-@tailwind base;
+!@tailwind base;
 
 h1 {
-  @apply text-2xl font-semibold;
+  @apply text- 2xl font-semibold;
 }
 
 h2 {
@@ -22,7 +22,8 @@ p {
 
 @tailwind components;
 @tailwind utilities;
-@tailwind forms;
+@tailwind form;
+
 
 @layer components {
   .btn-ui {
@@ -41,3 +42,4 @@ p {
     @apply min-h-screen max-w-screen-2xl mx-auto py-12 px-4 sm:py-8 sm:px-6 lg:px-12;
   }
 }
+
