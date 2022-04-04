@@ -12,8 +12,7 @@ const InjectableCardFormRazorpay = ({ session }) => {
     actions: { completeCart, setPaymentSession,updatePaymentSession },
   } = useCart()
 
-  //const stripe = useStripe()
-  //const elements = useElements()
+
   const razorpay = new RazorpayComponent()
   
   const completeOrder = async (response) => {
