@@ -60,15 +60,9 @@ class RazorpayComponent extends React.Component {
         amount:evt.target.value
       })
     }
-  /*const openPayModal = () => {
-      var rzp1 = new window.Razorpay(options);
-      rzp1.open();
-  };*/
+
   async openPayModal(session,cart, completeOrder,setErrorMessage,setProcessing){
-    /*const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    document.body.appendChild(script);*/
+   
     var amount_to_be_paid = session.data.amount
     var amount = (amount_to_be_paid)>0?amount_to_be_paid* 100:0; //Razorpay consider the amount in paise
       var options = {
@@ -96,10 +90,7 @@ class RazorpayComponent extends React.Component {
             const pi = response;
             const error = response.error
             console.log(error)
-           /* if ((pi && pi.status === "requires_capture") ||
-              (pi && pi.status === "captured")) {
-              completeOrder();
-            }*/
+         
       
             setErrorMessage(error.description+";reason:"+error.reason);
             setProcessing(false);
@@ -107,11 +98,7 @@ class RazorpayComponent extends React.Component {
           }
           else{
            
-            
-           /* session.data.razorpay_signature =response.razorpay_signature
-            session.data.razorpay_order_id = response.razorpay_order_id
-            session.data.razorpay_payment_id = response.razorpay_payment_id
-           */ 
+      
           completeOrder(response);
               
           }

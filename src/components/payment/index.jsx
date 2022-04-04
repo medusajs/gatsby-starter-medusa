@@ -27,7 +27,7 @@ const Payment = ({ cartId = null }) => {
             case "stripe":
               return <StripePayment />
             case "razorpay":
-                return <RazorpayPayment />
+                return <RazorpayPayment session={ps} />
             case "manual":
               return <ManualPayment key="manual" />
             default:

@@ -34,7 +34,7 @@ export const CartProvider = props => {
   const [cart, setCart] = useState(defaultCartContext.cart)
   const [loading, setLoading] = useState(defaultCartContext.loading)
   const client = useMedusa()
-  const { region } = useRegion()
+    const { region } = useRegion()
 
   const setCartItem = cart => {
     if (isBrowser) {
