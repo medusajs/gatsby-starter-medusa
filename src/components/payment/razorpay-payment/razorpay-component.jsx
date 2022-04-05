@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from "axios";
+
 class RazorpayComponent extends React.Component {
    
   constructor(props){
@@ -25,13 +25,7 @@ class RazorpayComponent extends React.Component {
 
   async handleResponse(response,completeOrder,setErrorMessage,setProcessing) {
     console.log(response);
-    var values ={
-        razorpay_signature : response.razorpay_signature,
-        razorpay_order_id : response.razorpay_order_id,
-        payment_id : response.razorpay_payment_id,
-        amount : response.amount
-      }
-   await Promise.resolve(response).then
+    await Promise.resolve(response).then
    .then(({ error, paymentIntent }) => {
     if (error) {
       const pi = error.payment_intent;
@@ -68,8 +62,8 @@ class RazorpayComponent extends React.Component {
       var options = {
         "key": process.env.GATSBY_RAZORPAY_KEY,
         "amount": amount, // 2000 paise = INR 20, amount in paisa
-        "name": "",
-        "description": "",
+        "name": process.env.GATSBY_SHOP_NAME,
+        "description": process.env.GATSBY_SHOP_DESCRIPTION,
         "order_id":session.data.id,
         "currency":session.data.currency,
         "prefill":{
@@ -78,7 +72,7 @@ class RazorpayComponent extends React.Component {
             "contact":cart.shipping_address.phone
         },
         "notes": {
-          "address": cart.shipping_address,
+          "address": cart.billing_address,
           "order_notes":session.data.notes
         },
         "theme": {
@@ -87,20 +81,14 @@ class RazorpayComponent extends React.Component {
         "handler": async function (response) {console.log(response);
           
           if (response?.error??false) {
-            const pi = response;
             const error = response.error
             console.log(error)
-         
-      
             setErrorMessage(error.description+";reason:"+error.reason);
             setProcessing(false);
             return;
           }
           else{
-           
-      
           completeOrder(response);
-              
           }
           return;
           
