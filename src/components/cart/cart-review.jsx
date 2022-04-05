@@ -8,10 +8,7 @@ const CartReview = ({ cart }) => {
       <h3 className="font-semibold mb-4">Order Summary</h3>
       <div className="mb-4">
         <Totals
-          subtotal={cart.subtotal}
-          total={cart.total}
-          currencyCode={cart.region?.currency_code}
-          cartId={cart.id}
+          cart={cart}
         />
       </div>
       <Link to="/checkout">

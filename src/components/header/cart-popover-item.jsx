@@ -1,4 +1,5 @@
 import React from "react"
+import { formatPrice } from "../../utils/format-price"
 
 const CartPopoverItem = ({ item, currencyCode }) => {
   return (
@@ -22,8 +23,7 @@ const CartPopoverItem = ({ item, currencyCode }) => {
           <p>
             <span className="text-ui-dark">Price</span>{" "}
             <span>
-              {(item.unit_price / 100) * item.quantity}{" "}
-              {currencyCode.toUpperCase()}
+              {formatPrice(item.unit_price, currencyCode, item.quantity)}
             </span>
           </p>
         </div>

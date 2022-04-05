@@ -8,6 +8,7 @@ import CartPopoverItem from "./cart-popover-item"
 
 const CartPopover = () => {
   const { cart } = useCart()
+  
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>

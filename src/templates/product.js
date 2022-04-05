@@ -16,7 +16,7 @@ import { toKebab } from "../utils/to-kebab"
 
 const Product = ({ data, pageContext }) => {
   const { product, related } = data
-  const { regionId, taxRate, currencyCode, handle } = pageContext
+  const { regionId, currencyCode, handle } = pageContext
   const details = pickDetails(product)
   const {
     loading,
@@ -65,7 +65,7 @@ const Product = ({ data, pageContext }) => {
         <div className="mt-8 lg:mt-0 lg:w-2/5 lg:max-w-xl">
           <h1 className="font-semibold text-3xl">{product.title}</h1>
           <p className="text-lg mt-2 mb-4">
-            {formatPrice(price?.amount, currencyCode, 1, taxRate)}
+            {formatPrice(price?.amount, currencyCode, 1)}
           </p>
           <p className="font-light">{product.description}</p>
           {product.options.map((option, index) => {

@@ -21,7 +21,7 @@ export const usePrice = () => {
         return lowest
       })
 
-      return formatPrice(lowestPrice.amount, lowestPrice.currency_code)
+      return formatPrice(lowestPrice.amount, lowestPrice.currency_code, 1)
     }
 
     return undefined

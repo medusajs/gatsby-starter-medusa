@@ -7,10 +7,15 @@ export const useRegionDisabled = () => {
   const location = useLocation()
 
   useEffect(() => {
-    if (location.pathname === "/checkout") {
+    if (
+      location.pathname === "/checkout" ||
+      location.pathname === "/checkout/"
+    ) {
       setDisabled(true)
       return
     }
+
+    console.log("location", location)
 
     setDisabled(false)
   }, [location])

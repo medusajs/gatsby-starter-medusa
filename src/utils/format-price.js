@@ -6,12 +6,7 @@
  * @param {number} quantity is optional and defaults to 1
  * @returns {string} the formatted price
  */
-export const formatPrice = (
-  amount,
-  currencyCode,
-  quantity = 1,
-  taxRate = 0
-) => {
+export const formatPrice = (amount, currencyCode, quantity = 1) => {
   return (
     parseFloat(((amount / 100) * quantity * 1).toFixed(2)) +
     " " +

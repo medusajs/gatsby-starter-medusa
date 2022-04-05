@@ -3,7 +3,7 @@ import { formatPrice } from "../../utils/format-price"
 import DividedContainer from "../utility/divided-container"
 import ImageContainer from "../utility/image-container"
 
-const OrderCompletedItem = ({ item, currencyCode, taxRate }) => {
+const OrderCompletedItem = ({ item, currencyCode }) => {
   return (
     <div className="flex mb-6 last:mb-0">
       <div className="mr-6">
@@ -33,7 +33,6 @@ const OrderCompletedItem = ({ item, currencyCode, taxRate }) => {
                   item.unit_price,
                   currencyCode,
                   item.quantity,
-                  taxRate
                 )}
               </span>
             </p>

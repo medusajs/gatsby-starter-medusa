@@ -1,5 +1,6 @@
 import React from "react"
 import { useCart } from "../../hooks/use-cart"
+import { useRegion } from "../../hooks/use-region"
 import { classNames } from "../../utils/class-names"
 import { formatPrice } from "../../utils/format-price"
 import QuantitySelector from "../products/quantity-selector"
@@ -8,6 +9,8 @@ const CartItem = ({ item, currencyCode, showDescription = true }) => {
   const {
     actions: { removeItem, updateQuantity },
   } = useCart()
+
+  const { region } = useRegion()
 
   return (
     <div className="flex mb-6 last:mb-0">
@@ -35,7 +38,7 @@ const CartItem = ({ item, currencyCode, showDescription = true }) => {
             </p>
           </div>
           <p className="font-semibold">
-            {formatPrice(item.unit_price, currencyCode, item.quantity)}
+            {formatPrice(item.unit_price, currencyCode, item.quantity, region?.tax_rate)}
           </p>
         </div>
         <div className="flex flex-col justify-between">

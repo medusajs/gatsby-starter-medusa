@@ -9,7 +9,7 @@ const DiscountField = () => {
 
   const {
     cart,
-    actions: { addDiscount },
+    actions: { addDiscount, removeDiscount },
   } = useCart()
 
   const discountForm = useFormik({
@@ -36,6 +36,10 @@ const DiscountField = () => {
 
       if (code) {
         setCode(code)
+      }
+    } else {
+      if (code) {
+        setCode(undefined)
       }
     }
   }, [cart])
@@ -71,7 +75,11 @@ const DiscountField = () => {
               />
             </div>
             <div className="mx-2" />
-            <button className="btn-ui" onClick={handleSubmit}>
+            <button
+              className="btn-ui"
+              onClick={async () => await removeDiscount()}
+              type="button"
+            >
               Remove
             </button>
           </Fragment>
