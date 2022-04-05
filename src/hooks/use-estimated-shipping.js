@@ -16,6 +16,10 @@ export const useEstimatedShipping = cartId => {
           .then(({ shipping_options }) => shipping_options)
           .catch(_err => [])
 
+        if (!shippingOptions.length) {
+          return
+        }
+
         const cheapestOption = shippingOptions.reduce((prev, curr) =>
           prev.amount < curr.amount ? prev : curr
         )

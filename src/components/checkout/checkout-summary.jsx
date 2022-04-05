@@ -28,12 +28,8 @@ const CheckoutSummary = ({ cart, shippingOption }) => {
           <DiscountField cartId={cart.id} />
         </div>
         <Totals
-          subtotal={cart.subtotal}
-          total={cart.total}
-          cartId={cart.id}
-          shipping={shippingOption?.amount}
-          currencyCode={cart.region?.currency_code}
-          discount={cart.discount}
+          cart={cart}
+          shippingOption={shippingOption}
         />
       </div>
     </div>

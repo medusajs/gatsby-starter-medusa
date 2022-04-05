@@ -12,9 +12,9 @@ const ProductListItem = ({ product }) => {
   const { region } = useRegion()
 
   const fromPrice = useMemo(() => {
-    return getFromPrice(product, region?.currency_code)
+    return getFromPrice(product, region?.currency_code, region?.tax_rate)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product, region?.currency_code])
+  }, [product, region])
 
   return (
     <RegionalLink to={product.handle} className="font-normal">

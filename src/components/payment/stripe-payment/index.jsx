@@ -22,12 +22,13 @@ const StripePayment = () => {
     return null
   }
 
-  const options = {
-    client_secret: stripeSession.data.client_secret,
-  }
-
   return (
-    <Elements stripe={stripePromise} options={options}>
+    <Elements
+      stripe={stripePromise}
+      options={{
+        clientSecret: stripeSession.data.client_secret,
+      }}
+    >
       <InjectableCardForm session={stripeSession} />
     </Elements>
   )

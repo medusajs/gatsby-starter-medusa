@@ -14,6 +14,7 @@ const defaultCartContext = {
     removeItem: async () => {},
     updateQuantity: async () => {},
     addDiscount: async () => {},
+    removeDiscount: async () => {},
     createPaymentSession: async () => {},
     setPaymentSession: async () => {},
     completeCart: async () => {},
@@ -152,6 +153,17 @@ export const CartProvider = props => {
       })
   }
 
+  const removeDiscount = async () => {
+    setLoading(true)
+
+    const cartId = cart.id
+
+    return client.carts.update(cartId, { discounts: [] }).then(({ cart }) => {
+      setCart(cart)
+      setLoading(false)
+    })
+  }
+
   const getCartShippingOptions = async (providedCartId = null) => {
     setLoading(true)
 
@@ -236,6 +248,7 @@ export const CartProvider = props => {
           removeItem,
           updateQuantity,
           addDiscount,
+          removeDiscount,
           createPaymentSession,
           setPaymentSession,
           completeCart,
