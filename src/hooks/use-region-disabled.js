@@ -15,8 +15,6 @@ export const useRegionDisabled = () => {
       return
     }
 
-    console.log("location", location)
-
     setDisabled(false)
   }, [location])
 
