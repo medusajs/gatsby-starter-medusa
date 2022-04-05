@@ -35,7 +35,7 @@ export const CartProvider = props => {
   const [loading, setLoading] = useState(defaultCartContext.loading)
   const client = useMedusa()
     const { region } = useRegion()
-
+  console.log(cart)
   const setCartItem = cart => {
     if (isBrowser) {
       localStorage.setItem(CART_ID, cart.id)
@@ -70,7 +70,7 @@ export const CartProvider = props => {
     initializeCart()
   }, [client.carts])
 
-  useEffect(() => {
+  useEffect(() => { 
     const updateCartRegion = async () => {
       setLoading(true)
 
@@ -174,7 +174,7 @@ export const CartProvider = props => {
 
     return client.carts.addShippingMethod(cartId, payload).then(({ cart }) => {
       setCart(cart)
-      setLoading(false)
+      setLoading(false) 
     })
   }
 

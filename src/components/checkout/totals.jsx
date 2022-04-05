@@ -14,7 +14,7 @@ const Totals = ({
 
   const appliedDiscount = discount?.length ? discount[0] : 0
 
-  const totalPrice = shipping ? total + shipping : total + estimatedShipping
+  const totalPrice = shipping ? subtotal + shipping : subtotal + estimatedShipping
 
   return (
     <div className="font-light text-sm">

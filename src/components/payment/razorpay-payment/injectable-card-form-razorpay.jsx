@@ -47,11 +47,7 @@ const InjectableCardFormRazorpay = ({ session }) => {
     setProcessing(true)
 
 
-    const { client_secret } = session.data
-    const email = cart.email
-    const address = cart.shipping_address
-
-    let razorpayPaymentResponse = razorpay.openPayModal(session,cart,completeOrder,setErrorMessage,setProcessing)  ;
+   let razorpayPaymentResponse = razorpay.openPayModal(session,cart,completeOrder,setErrorMessage,setProcessing)  ;
 
     return razorpayPaymentResponse
     
