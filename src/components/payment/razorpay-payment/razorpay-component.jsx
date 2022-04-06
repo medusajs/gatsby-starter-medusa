@@ -57,11 +57,11 @@ class RazorpayComponent extends React.Component {
 
   async openPayModal(session,cart, completeOrder,setErrorMessage,setProcessing){
    
-    var amount_to_be_paid = session.data.amount
-    var amount = (amount_to_be_paid)>0?amount_to_be_paid* 100:0; //Razorpay consider the amount in paise
+    var amount_to_be_paid = cart.total*100
+   
       var options = {
         "key": process.env.GATSBY_RAZORPAY_KEY,
-        "amount": amount, // 2000 paise = INR 20, amount in paisa
+        "amount": amount_to_be_paid, // 2000 paise = INR 20, amount in paisa
         "name": process.env.GATSBY_SHOP_NAME,
         "description": process.env.GATSBY_SHOP_DESCRIPTION,
         "order_id":session.data.id,
@@ -78,6 +78,11 @@ class RazorpayComponent extends React.Component {
         "theme": {
           "color": 1234
         },
+        "modal": {  
+                    "ondismiss": function(){ 
+                                console.log("dismissed payment");
+                            setProcessing(false) } 
+                          },
         "handler": async function (response) {console.log(response);
           
           if (response?.error??false) {
@@ -95,6 +100,12 @@ class RazorpayComponent extends React.Component {
        },
       }; 
       let rzp = new window.Razorpay(options);
+      rzp.on('payment.submit', function (data) {
+        if (data.method === 'bank_transfer') {
+          console.log("initating bank transfer")
+        }
+      });
+      rzp.on('virtual_account.credited', function(data){completeOrder(data)})
       rzp.open();  
   };
 

@@ -45,7 +45,7 @@ const InjectableCardFormRazorpay = ({ session }) => {
   const handlePayment = async e => {
     e.preventDefault()
     setProcessing(true)
-
+    
 
    let razorpayPaymentResponse = razorpay.openPayModal(session,cart,completeOrder,setErrorMessage,setProcessing)  ;
 
