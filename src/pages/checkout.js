@@ -8,7 +8,7 @@ const Checkout = () => {
       <SearchEngineOptimization title="Checkout" />
       <CheckoutFlow />
     </div>
-  )
+  ) 
 }
 
 export default Checkout
