@@ -26,7 +26,7 @@ const Payment = ({ cartId = null }) => {
           switch (ps.provider_id) {
             case "stripe":
               return <StripePayment />
-            case "razorpay":
+            case "razorpay": /*added to support razorpay in the starter*/
                 return <RazorpayPayment session={ps} />
             case "manual":
               return <ManualPayment key="manual" />

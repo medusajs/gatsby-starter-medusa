@@ -1,7 +1,11 @@
 import React, { useMemo } from "react"
 import { useCart } from "../../../hooks/use-cart"
 import InjectableCardFormRazorpay from "./injectable-card-form-razorpay"
-
+/***
+ * Component included to razorpay as payment mode in the gatsby starter
+ * 
+ * 
+ */
 
 
 
