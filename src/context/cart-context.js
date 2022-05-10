@@ -1,19 +1,12 @@
-import React, {
-  createContext,
-  useCallback,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react"
+import React, { createContext, useEffect, useState } from "react"
 import { useMedusa } from "../hooks/use-medusa"
 import { useRegion } from "../hooks/use-region"
+const _ = require('lodash');
 
 const defaultCartContext = {
   cart: {
     items: [],
   },
-  cartShippingOptions: [],
   loading: false,
   actions: {
     updateCart: () => {},
@@ -22,291 +15,250 @@ const defaultCartContext = {
     removeItem: async () => {},
     updateQuantity: async () => {},
     addDiscount: async () => {},
-    addCheckoutInfo: async () => {},
     createPaymentSession: async () => {},
     setPaymentSession: async () => {},
     completeCart: async () => {},
+    getCartShippingOptions: async () => {},
+    addShippingMethod: async () => {},
+    updatePaymentSession : async() =>{},
   },
-}
-
-const ACTIONS = {
-  UPDATE_CART: "UPDATE_CART",
-  RESET_CART: "RESET_CART",
-  UPDATE_SHIPPING_OPTIONS: "UPDATE_SHIPPING_OPTIONS",
 }
 
 const CartContext = createContext(defaultCartContext)
 export default CartContext
 
-const sortCart = items => {
-  function compare(a, b) {
-    if (a.created_at < b.created_at) {
-      return -1
-    }
-    if (a.created_at > b.created_at) {
-      return 1
-    }
-    return 0
-  }
-
-  return items.sort(compare)
-}
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case ACTIONS.UPDATE_CART:
-      return {
-        ...state,
-        cart: { ...action.payload, items: sortCart(action.payload.items) },
-      }
-    case ACTIONS.RESET_CART:
-      return {
-        ...state,
-        cart: { items: [] },
-      }
-    case ACTIONS.UPDATE_SHIPPING_OPTIONS:
-      return {
-        ...state,
-        cartShippingOptions: action.payload,
-      }
-    default:
-      break
-  }
-}
-
 const CART_ID = "cart_id"
+const isBrowser = typeof window !== "undefined"
 
 export const CartProvider = props => {
-  const [state, dispatch] = useReducer(reducer, defaultCartContext)
+  const [cart, setCart] = useState(defaultCartContext.cart)
   const [loading, setLoading] = useState(defaultCartContext.loading)
-  const cartId = useRef()
   const client = useMedusa()
-  const { region } = useRegion()
-
-  useEffect(() => {
-    if (state.cart.id) {
-      localStorage.setItem(CART_ID, state.cart.id)
-      cartId.current = state.cart.id
-    }
-  }, [state.cart?.id])
-
-  const createCart = async () => {
-    const cart = await client.carts
-      .create()
-      .then(({ cart }) => cart)
-      .catch(_err => undefined)
-
-    if (cart) {
-      dispatch({ type: ACTIONS.UPDATE_CART, payload: cart })
-      setLoading(false)
-      return
+    const { region } = useRegion()
+  console.log(cart)
+  const setCartItem = cart => {
+    if (isBrowser) {
+      localStorage.setItem(CART_ID, cart.id)
     }
 
-    setLoading(false)
+    setCart(cart)
   }
 
-  const fetchCart = useCallback(async () => {
-    let cart = undefined
+  useEffect(() => {
+    const initializeCart = async () => {
+      const existingCartId = isBrowser ? localStorage.getItem(CART_ID) : null
 
-    const id = localStorage.getItem(CART_ID) || cartId.current
+      if (existingCartId && existingCartId !== null) {
+        try {
+          const existingCart = await client.carts
+            .retrieve(existingCartId)
+            .then(({ cart }) => cart)
+          if (!existingCart.completed_at) {
+            setCartItem(existingCart)
+            return
+          }
+        } catch (e) {
+          localStorage.setItem(CART_ID, null)
+        }
+      }
 
-    if (id) {
-      cart = await client.carts
-        .retrieve(id)
-        .then(({ cart }) => cart)
-        .catch(_ => undefined)
-    }
-
-    if (cart) {
-      dispatch({ type: ACTIONS.UPDATE_CART, payload: cart })
+      const newCart = await client.carts.create({}).then(({ cart }) => cart)
+      setCartItem(newCart)
       setLoading(false)
-      return
     }
 
-    await createCart()
-  }, [])
+    initializeCart()
+  }, [client.carts])
 
-  useEffect(() => {
-    const initCart = async () => {
-      await fetchCart()
-    }
-
-    initCart()
-  }, [fetchCart])
-
-  useEffect(() => {
+  useEffect(() => { 
     const updateCartRegion = async () => {
-      const cart = await client.carts
-        .update(cartId.current, { region_id: region.id })
+      setLoading(true)
+
+      const cartId = cart.id
+
+      if (cart.region) {
+        const isEqual = cart.region.id === region.id
+        if (isEqual) {
+          setLoading(false)
+          return
+        }
+      }
+
+      const cartRes = await client.carts
+        .update(cartId, { region_id: region.id })
         .then(({ cart }) => cart)
 
-      dispatch({ type: ACTIONS.UPDATE_CART, payload: cart })
+      if (cartRes) {
+        setCart(cartRes)
+      }
+
+      setLoading(false)
     }
 
-    if (cartId.current && region?.id) {
+    if (cart.id) {
       updateCartRegion()
     }
-  }, [region?.id])
-
-  const updateCart = cart => {
-    dispatch({
-      type: ACTIONS.UPDATE_CART,
-      payload: cart,
-    })
-  }
-
-  const resetCart = () => {
-    dispatch({
-      type: ACTIONS.RESET_CART,
-    })
-  }
+  }, [cart.id, cart.region, region?.id, client.carts])
 
   const addItem = async item => {
-    const response = { cart: undefined, error: undefined }
+    setLoading(true)
 
-    response.cart = await client.carts.lineItems
-      .create(cartId.current, item)
-      .then(({ cart }) => cart)
-      .catch(err => {
-        response.error = err.response.data
-        return undefined
-      })
+    let cartId = cart.id
 
-    if (!response.error) {
-      dispatch({ type: ACTIONS.UPDATE_CART, payload: response.cart })
+    if (!cartId) {
+      const newCart = await client.carts.create({}).then(({ cart }) => cart)
+      cartId = newCart.id
+      setCartItem(newCart)
     }
 
-    return response
+    return client.carts.lineItems.create(cartId, item).then(({ cart }) => {
+      setCart(cart)
+      setLoading(false)
+    })
   }
 
   const removeItem = async id => {
-    const response = { cart: undefined, error: undefined }
+    setLoading(true)
 
-    response.cart = await client.carts.lineItems
-      .delete(cartId.current, id)
-      .then(({ cart }) => cart)
-      .catch(err => {
-        response.error = err.response.data
-        return undefined
-      })
+    const cartId = cart.id
 
-    if (!response.error) {
-      dispatch({ type: ACTIONS.UPDATE_CART, payload: response.cart })
-    }
-
-    return response
+    return client.carts.lineItems.delete(cartId, id).then(({ cart }) => {
+      setCart(cart)
+      setLoading(false)
+    })
   }
 
   const updateQuantity = async item => {
-    const response = { cart: undefined, error: undefined }
+    setLoading(true)
 
-    response.cart = await client.carts.lineItems
-      .update(cartId.current, item.id, { quantity: item.quantity })
-      .then(({ cart }) => cart)
-      .catch(err => {
-        response.error = err.response.data
-        return undefined
+    const cartId = cart.id
+
+    return client.carts.lineItems
+      .update(cartId, item.id, { quantity: item.quantity })
+      .then(({ cart }) => {
+        setCart(cart)
+        setLoading(false)
       })
-
-    if (!response.error) {
-      dispatch({ type: ACTIONS.UPDATE_CART, payload: response.cart })
-    }
-
-    return response
   }
 
   const addDiscount = async discount => {
-    const response = { cart: undefined, error: undefined }
+    setLoading(true)
 
-    response.cart = await client.carts.discounts
-      .create(cartId.current, discount)
-      .then(({ cart }) => cart)
-      .catch(err => {
-        response.error = err.response.data
-        return undefined
+    const cartId = cart.id
+
+    return client.carts
+      .update(cartId, { discounts: [{ code: discount }] })
+      .then(({ cart }) => {
+        setCart(cart)
+        setLoading(false)
       })
-
-    if (!response.error) {
-      dispatch({ type: ACTIONS.UPDATE_CART, payload: response.cart })
-    }
-
-    return response
   }
 
-  const addCheckoutInfo = async ({
-    shippingAddress,
-    email,
-    billingAddress,
-  }) => {
-    const response = { cart: undefined, error: undefined }
+  const getCartShippingOptions = async (providedCartId = null) => {
+    setLoading(true)
 
-    const info = {
-      shipping_address: shippingAddress,
-      email,
-    }
+    const cartId = providedCartId || cart.id
 
-    if (billingAddress) {
-      info["billing_address"] = billingAddress
-    }
-
-    response.cart = await client.carts.update(cartId.current, info)
+    return client.shippingOptions
+      .listCartOptions(cartId)
+      .then(({ shipping_options }) => {
+        setLoading(false)
+        return shipping_options
+      })
   }
 
-  const createPaymentSession = async cartId => {
-    const cart = await client.carts
-      .createPaymentSessions(cartId)
-      .then(({ cart }) => cart)
-      .catch(_err => undefined)
+  const addShippingMethod = async payload => {
+    setLoading(true)
 
-    if (cart) {
-      dispatch({ type: ACTIONS.UPDATE_CART, payload: cart })
-    }
+    const cartId = cart.id
+
+    return client.carts.addShippingMethod(cartId, payload).then(({ cart }) => {
+      setCart(cart)
+      setLoading(false) 
+    })
   }
 
-  const setPaymentSession = async (cartId, providerId) => {
-    const cart = await client.carts
+  const updateCart = async payload => {
+    setLoading(true)
+
+    const cartId = cart.id
+
+    return client.carts.update(cartId, payload).then(({ cart }) => {
+      setCart(cart)
+      setLoading(false)
+    })
+  }
+
+  const createPaymentSession = async (providedCartId = null) => {
+    setLoading(true)
+
+    const cartId = providedCartId ?? cart.id
+
+    return client.carts.createPaymentSessions(cartId).then(({ cart }) => {
+      setCart(cart)
+      setLoading(false)
+    })
+  }
+
+  const updatePaymentSession = async (providedCartId = null , providerId = null,data) => {
+    setLoading(true)
+
+     const cartId = providedCartId ?? cart.id
+     
+
+    return client.carts.updatePaymentSession(cartId, providerId ,{data}).then(({ cart }) => {
+      setCart(cart)
+      setLoading(false)
+      return cart
+    },reason=>{
+      console.log("update failed"+reason)})
+  }
+
+  const setPaymentSession = async (providerId, providedCartId = null) => {
+    setLoading(true)
+
+    const cartId = providedCartId ?? cart.id
+
+    return client.carts
       .setPaymentSession(cartId, { provider_id: providerId })
-      .then(({ cart }) => cart)
-      .catch(_err => undefined)
-
-    if (cart) {
-      dispatch({ type: ACTIONS.UPDATE_CART, payload: cart })
-    }
-
-    return cart
+      .then(({ cart }) => {
+        setCart(cart)
+        setLoading(false)
+        return cart
+      })
   }
 
-  const completeCart = async cartId => {
-    const order = await client.carts
-      .complete(cartId)
-      .then(({ data: order }) => order)
-      .catch(_err => undefined)
+  const completeCart = async (providedCartId = null) => {
+    setLoading(true)
 
-    if (order) {
-      localStorage.removeItem(CART_ID)
-      dispatch({ type: ACTIONS.RESET_CART })
-    }
+    const cartId = providedCartId ?? cart.id
 
-    return order
+    return client.carts.complete(cartId).then(({ data: order }) => {
+      setCart(defaultCartContext.cart)
+      setLoading(false)
+      return order
+    })
   }
 
   return (
     <CartContext.Provider
       {...props}
       value={{
-        ...state,
+        ...defaultCartContext,
         loading,
+        cart,
         actions: {
-          updateCart,
-          resetCart,
           addItem,
           removeItem,
           updateQuantity,
           addDiscount,
-          addCheckoutInfo,
           createPaymentSession,
           setPaymentSession,
           completeCart,
+          getCartShippingOptions,
+          addShippingMethod,
+          updateCart,
+          updatePaymentSession
         },
       }}
     />

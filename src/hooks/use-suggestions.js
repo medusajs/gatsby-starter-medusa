@@ -27,5 +27,20 @@ export const useSuggestions = () => {
 
   const products = data.products.edges.map(edge => edge.node)
 
-  return
+  const getSuggestionsFromCart = cart => {
+    if (!cart) return []
+
+    const cartProductHandles = cart.items.map(
+      item => item.variant?.product?.handle
+    )
+    const suggestions = products.filter(
+      product => !cartProductHandles.includes(product.handle)
+    )
+
+    return suggestions
+  }
+
+  return {
+    getSuggestionsFromCart,
+  }
 }

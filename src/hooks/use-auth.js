@@ -14,12 +14,20 @@ export const useAuth = () => {
       password: "",
     },
     validationSchema: Validator.loginSchema,
-    onSubmit: async (values, { setStatus }) => {
+    validateOnChange: false,
+    validateOnBlur: false,
+    onSubmit: async (values, { setStatus, validateForm }) => {
+      const validationResponse = await validateForm(values)
+
+      if (Object.keys(validationResponse).length > 0) {
+        setStatus(validationResponse)
+        return
+      }
+
       const response = await loginCustomer(values)
 
       if (response.error) {
-        setStatus(response.error.message)
-        console.log(response.error)
+        setStatus({ authError: response.error })
         return
       }
 
@@ -36,12 +44,20 @@ export const useAuth = () => {
       password: "",
     },
     validationSchema: Validator.registerSchema,
-    onSubmit: async (values, { setStatus }) => {
+    validateOnChange: false,
+    validateOnBlur: false,
+    onSubmit: async (values, { setStatus, validateForm }) => {
+      const validationResponse = await validateForm(values)
+
+      if (Object.keys(validationResponse).length > 0) {
+        setStatus(validationResponse)
+        return
+      }
+
       const response = await createCustomer(values)
 
       if (response.error) {
-        setStatus(response.error.message)
-        console.log(response.error)
+        setStatus({ authError: response.error })
         return
       }
 
