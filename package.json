@@ -43,7 +43,8 @@
   "keywords": [
     "gatsby",
     "medusa",
-    "e-commerce"
+    "e-commerce",
+    "medusa-storefront"
   ],
   "license": "MIT",
   "scripts": {
