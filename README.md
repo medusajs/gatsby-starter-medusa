@@ -28,6 +28,8 @@ Medusa is an open-source headless commerce engine that enables developers to cre
 
 ## 🚀 Quick Start
 
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/medusajs/gatsby-starter-medusa)
+
 1. **Create a new Gatsby project**
 
 ```zsh
