@@ -5,7 +5,7 @@ import { onlyUnique } from "../../utils/only-unique"
 const ProductOptionSelector = ({ option, current, updateOption }) => {
   const filteredOptions = option.values.map(v => v.value).filter(onlyUnique)
   return (
-    <div className="text-sm">
+     <div className={classNames("text-sm", filteredOptions.length === 1 ? "hidden" : "")}>
       <p className="font-medium mb-2">Select {option.title}</p>
       <div>
         {filteredOptions.map((v, index) => {
