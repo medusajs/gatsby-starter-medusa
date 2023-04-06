@@ -24,7 +24,7 @@ Medusa is an open-source headless commerce engine that enables developers to cre
   </a>
 </p>
 
-> **Prerequisites**: To use the starter you should have a Medusa server running locally on port 9000. Check out [medusa-starter-default](https://github.com/medusajs/medusa-starter-default) for a quick setup.
+> :warning: **This storefront is deprecated and may not work with the latest versions of Medusa. It's recommended to use the [Next.js storefront](https://github.com/medusajs/nextjs-starter-medusa) instead.**
 
 ## 🚀 Quick Start
 
