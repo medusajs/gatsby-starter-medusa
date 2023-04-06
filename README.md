@@ -24,7 +24,7 @@ Medusa is an open-source headless commerce engine that enables developers to cre
   </a>
 </p>
 
-> :warning: **This storefront is deprecated. It's recommended to use the [Next.js storefront](https://github.com/medusajs/nextjs-starter-medusa) instead.**
+> :warning: **The Medusa team is not actively maintaining this repository. So, this storefront may not work as expected with the latest versions of Medusa. Contributions are highly appreciated. Otherwise, it's recommended to use the [Next.js storefront](https://github.com/medusajs/nextjs-starter-medusa) instead.**
 
 ## 🚀 Quick Start
 
